@@ -1002,3 +1002,10 @@ export const selectableAudioDelays = {
 };
 
 export const selectableRepeatTimes = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 15, 20, 25, 30, 35, 40, 45, 50];
+
+// UI languages available for the application interface.
+// Add a new entry here (and a matching string set in morphologyTerms.js) to support another language.
+export const selectableUILanguages = {
+	en: { code: 'en', name: 'English' },
+	id: { code: 'id', name: 'Bahasa Indonesia' }
+};

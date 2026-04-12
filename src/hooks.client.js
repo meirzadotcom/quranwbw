@@ -9,6 +9,7 @@ export const defaultSettings = {
 		wordTooltip: 1,
 		wakeLockEnabled: false,
 		englishTerminology: false,
+		uiLanguage: 'en',
 		hideNonDuaPart: false,
 		wordMorphologyOnClick: false,
 		fontSizes: {

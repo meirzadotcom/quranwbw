@@ -31,7 +31,8 @@ import {
 	__wideWesbiteLayoutEnabled,
 	__signLanguageModeEnabled,
 	__offlineModeSettings,
-	__homepageLayoutPreferences
+	__homepageLayoutPreferences,
+	__uiLanguage
 } from '$utils/stores';
 import { fetchChapterData, fetchVerseTranslationData } from '$utils/fetchData';
 
@@ -81,6 +82,13 @@ export function updateSettings(props) {
 			userSettings.displaySettings.englishTerminology = props.value;
 			trackEvent = true;
 			location.reload();
+			break;
+
+		// for UI language
+		case 'uiLanguage':
+			__uiLanguage.set(props.value);
+			userSettings.displaySettings.uiLanguage = props.value;
+			trackEvent = true;
 			break;
 
 		// for website theme

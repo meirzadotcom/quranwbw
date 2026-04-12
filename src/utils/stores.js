@@ -58,7 +58,8 @@ let __currentPage,
 	__signLanguageModeEnabled,
 	__verseWordBlocks,
 	__offlineModeSettings,
-	__homepageLayoutPreferences;
+	__homepageLayoutPreferences,
+	__uiLanguage;
 
 if (browser) {
 	const userSettings = JSON.parse(localStorage.getItem('userSettings'));
@@ -221,6 +222,9 @@ if (browser) {
 
 	// to store all the homepage layout preferences like active tabs, sort order, etc...
 	__homepageLayoutPreferences = writable(userSettings.displaySettings.homepageLayoutPreferences);
+
+	// to store the UI language (e.g. 'en', 'id')
+	__uiLanguage = writable(userSettings.displaySettings.uiLanguage);
 }
 
 export {
@@ -281,5 +285,6 @@ export {
 	__signLanguageModeEnabled,
 	__verseWordBlocks,
 	__offlineModeSettings,
-	__homepageLayoutPreferences
+	__homepageLayoutPreferences,
+	__uiLanguage
 };
