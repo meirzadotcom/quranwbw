@@ -79,6 +79,54 @@ You can freely make changes, and Tailwind configuration files without manually r
 This SvelteKit project can be deployed to various hosting providers.
 It is currently hosted on Cloudflare Pages, but it can also be deployed to other platforms such as Vercel, Netlify, or any service that supports SvelteKit adapters.
 
+## Contributing a Language Translation
+
+QuranWBW has a lightweight i18n system that makes it straightforward to add a new interface language. There are two parts: the **UI strings** (buttons, labels, messages) and the **chapter name meanings** (e.g. "The Opening", "The Cow").
+
+#### 1. UI strings
+
+All UI strings live in `src/utils/i18n/`. English (`en.js`) is the baseline — every key must exist there. Other languages only need to include keys that differ from English; missing keys fall back to English automatically.
+
+1. Copy `src/utils/i18n/en.js` to `src/utils/i18n/<code>.js` (e.g. `fr.js` for French).
+2. Translate the values. You may remove keys whose English value is already correct.
+3. Open `src/utils/i18n.js` and register the new file:
+
+```js
+import fr from './i18n/fr.js';
+const translations = { en, id, fr };
+```
+
+4. Open `src/data/options.js` and add the language to `selectableUILanguages`:
+
+```js
+export const selectableUILanguages = [
+  { id: 'en', name: 'English' },
+  { id: 'id', name: 'Bahasa Indonesia' },
+  { id: 'fr', name: 'Français' },   // ← add your language here
+];
+```
+
+#### 2. Chapter name meanings
+
+Each language's chapter meanings live in `src/data/chapterTranslations/`. English meanings are already stored in the core Quran metadata, so no English file is needed here.
+
+1. Copy `src/data/chapterTranslations/id.js` to `src/data/chapterTranslations/<code>.js`.
+2. Replace every value with the chapter meaning in your language (all 114 entries).
+3. Open `src/data/quranChapterTranslations.js` and register the new file:
+
+```js
+import fr from './chapterTranslations/fr.js';
+const translations = { id, fr };
+```
+
+#### Tips
+
+- Keep one PR per language to make review easy.
+- Include a native speaker in the review if possible.
+- If you're only able to translate part of the UI strings, that's fine — submit what you have and note which keys are still missing.
+
+---
+
 ## Contribution
 
 QuranWBW welcomes focused contributions that improve the project. You can help by reporting bugs, suggesting small features, improving documentation, or spreading the word.
