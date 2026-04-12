@@ -1,5 +1,6 @@
 <script>
 	import { isUserOnline } from '$utils/offlineModeHandler';
+	import { t } from '$utils/i18n';
 	import { onMount } from 'svelte';
 
 	// Whether the message should be vertically centered
@@ -30,6 +31,10 @@
 		console.warn(error);
 	}
 
+	// Full error message including optional error code
+	$: errorMessage = $t('error.loadData') + (errorCode !== null ? ' (' + errorCode + ')' : '');
+	$: offlineMessage = $t('error.offline');
+
 	// Tracks the user's network state
 	let userOnline = true;
 
@@ -40,9 +45,9 @@
 </script>
 
 <div class="flex flex-col space-y-4 justify-center text-center !text-sm max-w-xl mx-auto" class:pt-[30vh]={center === true}>
-	<p>Sorry, we couldn’t load the data right now. Please try again in a {errorCode !== null ? `moment (${errorCode})` : 'moment'}.</p>
+	<p>{errorMessage}</p>
 
 	{#if !userOnline}
-		<p>It also looks like you’re currently offline. Please reconnect to the internet and, if you plan to use this page offline, make sure the required offline data is downloaded beforehand.</p>
+		<p>{offlineMessage}</p>
 	{/if}
 </div>
