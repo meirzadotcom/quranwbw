@@ -7,6 +7,7 @@
 	import Radio from '$ui/FlowbiteSvelte/forms/Radio.svelte';
 	import ErrorLoadingData from '$misc/ErrorLoadingData.svelte';
 	import { __currentPage, __quizCorrectAnswers, __quizWrongAnswers } from '$utils/stores';
+	import { t } from '$utils/i18n';
 	import { buttonClasses, buttonOutlineClasses, disabledClasses, individualRadioClasses } from '$data/commonClasses';
 	import { updateSettings } from '$utils/updateSettings';
 	import { playWordAudio } from '$utils/audioController';
@@ -100,7 +101,7 @@
 
 			<!-- options -->
 			<div id="options" class="pt-8">
-				<p class="mb-5 text-sm">Guess the correct translation:</p>
+				<p class="mb-5 text-sm">{$t('game.guessWord.prompt')}</p>
 				<div class="grid gap-4 md:gap-6 w-full md:grid-cols-2">
 					{#each Object.entries(data) as [key, _]}
 						<Radio name="bordered" bind:group={selection} value={+key} class={answerChecked === true && selection !== +key ? disabledClasses : null} custom>
@@ -123,7 +124,7 @@
 			{#if answerChecked === true && isAnswerCorrect !== null}
 				<div id="answer-results" class="flex justify-center text-center font-medium text-md">
 					<span>
-						{isAnswerCorrect ? 'Your answer was correct 😀' : `Sorry, the correct answer was "${data[randomWord].word_english}" 😟`}
+						{isAnswerCorrect ? $t('game.guessWord.correct') : $t('game.guessWord.wrong').replace('{answer}', data[randomWord].word_english)}
 					</span>
 				</div>
 			{/if}
@@ -133,21 +134,21 @@
 				<!-- confirm-button -->
 				{#if !answerChecked}
 					<div id="confirm-button" class="{selection === null || answerChecked === true ? disabledClasses : null} w-full">
-						<button class="{buttonClasses} w-full" on:click={() => checkAnswer()}>Confirm</button>
+						<button class="{buttonClasses} w-full" on:click={() => checkAnswer()}>{$t('common.confirm')}</button>
 					</div>
 				{/if}
 
 				<!-- skip-word-button -->
 				<div id="skip-word-button" class="w-full">
-					<button class="{buttonOutlineClasses} w-full" on:click={() => setRandomWord()}>{answerChecked ? 'Next' : 'Skip'} {@html '&#x2192;'}</button>
+					<button class="{buttonOutlineClasses} w-full" on:click={() => setRandomWord()}>{answerChecked ? $t('common.next') : $t('common.skip')} {@html '&#x2192;'}</button>
 				</div>
 			</div>
 
 			<!-- correct / wrong answers so far -->
 			<div id="quiz-stats" class="flex flex-row space-x-4 justify-center text-xs">
-				<span>Correct: {$__quizCorrectAnswers}</span>
+				<span>{$t('game.guessWord.correctCount').replace('{count}', String($__quizCorrectAnswers))}</span>
 				<span>|</span>
-				<span>Wrong: {$__quizWrongAnswers}</span>
+				<span>{$t('game.guessWord.wrongCount').replace('{count}', String($__quizWrongAnswers))}</span>
 			</div>
 		</div>
 	{:catch error}

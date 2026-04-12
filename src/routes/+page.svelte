@@ -25,6 +25,7 @@
 	import { term } from '$utils/terminologies';
 	import { disabledClasses } from '$data/commonClasses';
 	import { fetchChapterData, fetchVerseTranslationData } from '$utils/fetchData';
+    import { t } from '$utils/i18n';
 
 	const topButtonClasses = `inline-flex items-center rounded-full px-4 py-2 space-x-2 justify-center ${window.theme('hoverBorder')} ${window.theme('bgSecondaryLight')}`;
 	const continueReadingButtonClasses = `inline-flex items-center rounded-full px-4 py-2 space-x-2 justify-center text-sm ${window.theme('hoverBorder')} ${window.theme('bgSecondaryLight')}`;
@@ -33,7 +34,7 @@
 	const commontabClasses = 'px-2 md:px-3 py-2 text-xs md:text-md border-b-4 cursor-pointer';
 	const tabDefaultBorder = `${commontabClasses} border-transparent`;
 	const tabActiveBorder = `${commontabClasses} ${window.theme('border')}`;
-	const siteDescriptionText = ['Your companion for reading, listening to, and learning the Holy Quran, word by word.', 'With features like word audios, Tajweed colors, and transliteration, delve into the Quran with ease. Additionally, explore multi-language translations, tafsir, and detailed word morphology.'];
+	const siteDescriptionText = [$t('home.description1'), $t('home.description2')];
 	const currentHour = new Date().getHours();
 
 	// Tab Indexes
@@ -153,14 +154,14 @@
 					}}
 				>
 					<Search2Bold size={4} />
-					<span class="hidden md:block">Search</span>
+					<span class="hidden md:block">{$t('nav.search')}</span>
 				</button>
-				<a href="/topics" class="{topButtonClasses} !py-4 md:bg-transparent"><TopicsBold size={4} /><span class="hidden md:block">Topics</span></a>
-				<a href={`/${term('supplications').toLowerCase()}`} class="{topButtonClasses} !py-4 md:bg-transparent"><SupplicationBold size={4} /><span class="hidden md:block">{term('supplications')}</span></a>
-				<a href={Object.prototype.hasOwnProperty.call($__lastRead, 'page') ? `/page/${$__lastRead.page}` : '/page/1'} class="{topButtonClasses} !py-4 md:bg-transparent"><BookFilled size={4} /><span class="hidden md:block">Mushaf</span></a>
-				<a href="/morphology?word=1:1" class="{topButtonClasses} !py-4 md:bg-transparent"><MorphologyBold size={4} /><span class="hidden md:block">Morphology</span></a>
+				<a href="/topics" class="{topButtonClasses} !py-4 md:bg-transparent"><TopicsBold size={4} /><span class="hidden md:block">{$t('nav.topics')}</span></a>
+				<a href={`/${term('supplications').toLowerCase()}`} class="{topButtonClasses} !py-4 md:bg-transparent"><SupplicationBold size={4} /><span class="hidden md:block">{$t('nav.supplications')}</span></a>
+				<a href={Object.prototype.hasOwnProperty.call($__lastRead, 'page') ? `/page/${$__lastRead.page}` : '/page/1'} class="{topButtonClasses} !py-4 md:bg-transparent"><BookFilled size={4} /><span class="hidden md:block">{$t('nav.mushaf')}</span></a>
+				<a href="/morphology?word=1:1" class="{topButtonClasses} !py-4 md:bg-transparent"><MorphologyBold size={4} /><span class="hidden md:block">{$t('nav.morphology')}</span></a>
 			</div>
-			<button class="{topButtonClasses} !py-4 md:bg-transparent" on:click={() => __siteNavigationModalVisible.set(true)}><Menu size={4} /><span class="hidden md:block">Menu</span></button>
+			<button class="{topButtonClasses} !py-4 md:bg-transparent" on:click={() => __siteNavigationModalVisible.set(true)}><Menu size={4} /><span class="hidden md:block">{$t('nav.menu')}</span></button>
 		</div>
 	</div>
 
@@ -228,21 +229,21 @@
 			<div class="flex flex-row justify-center">
 				<div class="flex text-sm font-medium text-center justify-center space-x-1 md:space-x-4 rounded-full py-2 {!homepageLayoutPreferences.extrasPanelVisible && disabledClasses}">
 					<button on:click={() => changeTabs('extrasActiveTab', bookmarksTab)} class="{extrasActiveTab === bookmarksTab ? tabActiveBorder : tabDefaultBorder} flex flex-row space-x-1 items-center truncate" data-umami-event="Bookmarks Tab Button">
-						<span>Bookmarks</span>
+						<span>{$t('nav.bookmarks')}</span>
 						<span>{totalBookmarks > 0 ? `(${totalBookmarks})` : ''}</span>
 					</button>
 					<button on:click={() => changeTabs('extrasActiveTab', notesTab)} class="{extrasActiveTab === notesTab ? tabActiveBorder : tabDefaultBorder} flex flex-row space-x-1 items-center truncate" data-umami-event="Notes Tab Button">
-						<span>Notes</span>
+						<span>{$t('nav.notes')}</span>
 						<span>{totalNotes > 0 ? `(${totalNotes})` : ''}</span>
 					</button>
-					<button on:click={() => changeTabs('extrasActiveTab', suggestionsTab)} class={extrasActiveTab === suggestionsTab ? tabActiveBorder : tabDefaultBorder} data-umami-event="Suggestions Tab Button">Suggestions</button>
+					<button on:click={() => changeTabs('extrasActiveTab', suggestionsTab)} class={extrasActiveTab === suggestionsTab ? tabActiveBorder : tabDefaultBorder} data-umami-event="Suggestions Tab Button">{$t('nav.suggestions')}</button>
 				</div>
 			</div>
 
 			<button class="inline-flex p-2 rounded-full items-center {window.theme('hoverBorder')} {window.theme('bgSecondaryLight')}" on:click={() => (homepageLayoutPreferences.extrasPanelVisible = !homepageLayoutPreferences.extrasPanelVisible)} data-umami-event="Toggle Panel Button">
 				<svelte:component this={homepageLayoutPreferences.extrasPanelVisible ? EyeCrossed : Eye} size={4} />
 			</button>
-			<Tooltip arrow={false} type="light" placement="top" class="z-30 w-max hidden md:block font-normal">{homepageLayoutPreferences.extrasPanelVisible ? 'Hide Panel' : 'Show Panel'}</Tooltip>
+			<Tooltip arrow={false} type="light" placement="top" class="z-30 w-max hidden md:block font-normal">{homepageLayoutPreferences.extrasPanelVisible ? $t('common.hidePanel') : $t('common.showPanel')}</Tooltip>
 		</div>
 
 		<div id="extras-panel" class="mb-4 pt-2 {homepageLayoutPreferences.extrasPanelVisible ? 'block' : 'hidden'}">

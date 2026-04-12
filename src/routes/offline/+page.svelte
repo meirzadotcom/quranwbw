@@ -18,10 +18,11 @@
 	import { term } from '$utils/terminologies';
 	import { selectableTafsirs } from '$data/selectableTafsirs';
 	import { clearDexieTable } from '$utils/dexie';
+	import { t } from '$utils/i18n';
 
-	// Common messages
-	const errorAlertMessage = 'Something went wrong. Please try again in a few moments.';
-	const mismatchMessage = 'Settings changed. Re-download to ensure offline access works correctly.';
+	// Common messages (reactive so they update when language changes)
+	$: errorAlertMessage = $t('offline.downloadError');
+	$: mismatchMessage = $t('offline.settingsChanged');
 
 	// Chapter and Quran pages count
 	const totalChapters = 114;
@@ -83,9 +84,9 @@
 	$: dataSections = [
 		{
 			id: 'chapterData',
-			title: `${term('chapter')} Data`,
+			title: $t('offline.chapterData').replace('{chapter}', term('chapter')),
 			dataSizeInMB: 20,
-			description: `These files download the Quran text data and allow you to read all 114 ${term('chapters')} offline. The content follows your selected reading settings, such as translations and transliterations. Any special Mushaf font files are not included and must be downloaded separately.`,
+			description: $t('offline.chapterData.desc').replace('{chapters}', term('chapters')),
 			isDataDownloaded: isChapterDataDownloaded,
 			isDownloading: isDownloadingChapter,
 			showMismatchBanner: false,
@@ -95,9 +96,9 @@
 		},
 		{
 			id: 'juzData',
-			title: `${term('juzs')} Data`,
+			title: $t('offline.juzData').replace('{juz}', term('juz')),
 			dataSizeInMB: 20,
-			description: `These files allow you to read all 30 Quran ${term('juzs')} offline. The downloaded content is based on your selected settings, such as font style, translations, and transliterations.`,
+			description: $t('offline.juzData.desc').replace('{juzs}', term('juzs')),
 			isDataDownloaded: isJuzDataDownloaded,
 			isDownloading: isDownloadingJuz,
 			showMismatchBanner: false,
@@ -107,9 +108,9 @@
 		},
 		{
 			id: 'mushafData',
-			title: 'Mushaf Data',
+			title: $t('offline.mushafData'),
 			dataSizeInMB: 60,
-			description: 'These files let you open the Mushaf (page) view offline. All 604 pages, the required font files, and the Mushaf text content are included.',
+			description: $t('offline.mushafData.desc'),
 			isDataDownloaded: isMushafDataDownloaded,
 			isDownloading: isDownloadingMushaf,
 			showMismatchBanner: false,
@@ -122,9 +123,9 @@
 		},
 		{
 			id: 'morphologyData',
-			title: 'Morphology Data',
+			title: $t('offline.morphologyData'),
 			dataSizeInMB: 90,
-			description: 'These files allow you to view detailed word information in the Morphology section. This includes word meanings, roots, verb forms, and related words used across the Quran.',
+			description: $t('offline.morphologyData.desc'),
 			isDataDownloaded: isMorphologyDataDownloaded,
 			isDownloading: isDownloadingMorphology,
 			showMismatchBanner: false,
@@ -134,9 +135,9 @@
 		},
 		{
 			id: 'tafsirData',
-			title: 'Tafsir Data',
+			title: $t('offline.tafsirData').replace('{tafsir}', term('tafsir')),
 			dataSizeInMB: 90,
-			description: `These files let you read ${term('tafsir')} for all ${term('chapters')} offline, based on the ${term('tafsir')} you have selected in your settings.`,
+			description: $t('offline.tafsirData.desc').replace(/{tafsir}/g, term('tafsir')).replace('{chapters}', term('chapters')),
 			isDataDownloaded: isTafsirDataDownloaded,
 			isDownloading: isDownloadingTafsir,
 			showMismatchBanner: hasTafsirMismatch,
@@ -872,11 +873,11 @@
 	__currentPage.set('Offline Mode (Beta)');
 </script>
 
-<PageHead title={'Offline Mode (Beta)'} />
+<PageHead title={$t('offline.title')} />
 
 <div class="mx-auto">
 	<div class="markdown mx-auto">
-		<h3>Offline Mode (Beta)</h3>
+		<h3>{$t('offline.title')}</h3>
 		<p>
 			Offline mode lets you use parts of QuranWBW without an internet connection by saving some website data on your device. This is optional and you can update or remove the saved data at any time. Please note that enabling offline mode downloads the core website files, which may use a noticeable amount of data and take some time, especially on slower connections or mobile data. It's best to use
 			a stable Wi-Fi connection if possible.
@@ -889,27 +890,27 @@
 		<div class="flex flex-col flex-1 space-y-2 text-sm {isDownloading && !isDownloadingEssential && disabledClasses}">
 			<div class="flex flex-row justify-between">
 				<div>
-					<span class={window.theme('textSecondary')}>Essential Offline Data</span>
+					<span class={window.theme('textSecondary')}>{$t('offline.essential')}</span>
 					<span class="opacity-70"> (~{dataSections[0].dataSizeInMB + dataSections[1].dataSizeInMB} MB)</span>
 				</div>
-				<span class="px-2 py-1 rounded-full text-xs h-max {window.theme('textSecondary')} {window.theme('bgSecondaryLight')}">Recommended</span>
+				<span class="px-2 py-1 rounded-full text-xs h-max {window.theme('textSecondary')} {window.theme('bgSecondaryLight')}">{ $t('offline.recommended')}</span>
 			</div>
 
 			<div class="flex flex-col flex-1 space-y-4">
 				<div class="text-sm mb-auto">
-					This will download the essential files needed to use the website offline. It includes the main website files, all 114 {term('chapters')}, and all 30 {term('juzs')}.
+					{$t('offline.essential.desc').replace('{chapters}', term('chapters')).replace('{juzs}', term('juzs'))}
 				</div>
 
 				<button class="text-sm space-x-2 h-max {buttonClasses}" on:click={isServiceWorkerRegistered && isChapterDataDownloaded && isJuzDataDownloaded ? showConfirm('This will delete the essential offline data.', '', handleDeleteEssentialData) : handleDownloadEssentialData} disabled={isDownloading}>
 					{#if isServiceWorkerRegistered && isChapterDataDownloaded && isJuzDataDownloaded}
 						<Trash size={4} />
-						<span>Delete</span>
+						<span>{$t('common.delete')}</span>
 					{:else if isDownloadingEssential}
 						<Spinner size="5" inline={true} hideMessages={true} />
 						<span>{downloadProgressPercentage}%</span>
 					{:else}
 						<Download size={4} />
-						<span>Download</span>
+						<span>{$t('common.download')}</span>
 					{/if}
 				</button>
 			</div>
@@ -920,17 +921,16 @@
 
 		<!-- Advanced Data Download Toggle -->
 		<div class="flex flex-col flex-1 space-y-2 text-sm">
-			<div class={window.theme('textSecondary')}>Advanced Data Download</div>
+			<div class={window.theme('textSecondary')}>{$t('offline.advanced')}</div>
 
 			<div class="flex flex-col flex-1 space-y-4">
 				<div class="text-sm mb-auto">
-					This section lets you choose exactly what you want to download. You can download or remove specific data like {term('chapters')}, {term('juzs')}, Mushaf pages,
-					{term('tafsir')}, or Morphology, based on your needs.
+					{$t('offline.advanced.desc')}
 				</div>
 
 				<button class="text-sm space-x-2 h-max {buttonClasses}" on:click={() => (showAdvancedDownloadOptions = !showAdvancedDownloadOptions)} disabled={isDownloading}>
 					<svelte:component this={showAdvancedDownloadOptions ? EyeCrossed : Eye} size={4} />
-					<span>{showAdvancedDownloadOptions ? 'Disable Options' : 'Enable Options'}</span>
+					<span>{showAdvancedDownloadOptions ? $t('offline.disableOptions') : $t('offline.enableOptions')}</span>
 				</button>
 			</div>
 		</div>

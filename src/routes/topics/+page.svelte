@@ -4,6 +4,7 @@
 	import ArrowUp from '$svgs/ArrowUp.svelte';
 	import FullVersesDisplay from '$display/verses/modes/FullVersesDisplay.svelte';
 	import { __currentPage } from '$utils/stores';
+	import { t } from '$utils/i18n';
 	import { onMount } from 'svelte';
 	import { fetchAndCacheJson } from '$utils/fetchData';
 	import { cdnStaticDataUrls } from '$data/websiteSettings';
@@ -93,7 +94,7 @@
 		{@const resultsCount = selectedTopicKeys.split(',').length}
 		<!-- Verses Display -->
 		<div>
-			<div class="my-4 text-center text-xs">Showing {resultsCount} {resultsCount > 1 ? 'results' : 'result'} for the topic "{selectedTopicName}".</div>
+			<div class="my-4 text-center text-xs">{$t('topics.showing').replace('{count}', String(resultsCount)).replace('{results}', resultsCount > 1 ? $t('common.results') : $t('common.result')).replace('{topic}', selectedTopicName)}</div>
 			<FullVersesDisplay keys={selectedTopicKeys} />
 		</div>
 	{:else}

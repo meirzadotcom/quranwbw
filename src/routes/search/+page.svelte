@@ -7,6 +7,7 @@
 	import { goto } from '$app/navigation';
 	import { __currentPage } from '$utils/stores';
 	import { term } from '$utils/terminologies';
+	import { t } from '$utils/i18n';
 	import { quranMetaData } from '$data/quranMeta';
 	import { fade } from 'svelte/transition';
 	import { checkOnlineAndAlert } from '$utils/offlineModeHandler';
@@ -168,7 +169,7 @@
 		<!-- search input form -->
 		<form on:submit|preventDefault={() => updateSearchQuery(document.getElementById('search-input').value)} class="flex items-center w-full">
 			<div class="relative w-full">
-				<input type="search" id="search-input" value={searchQuery} class="bg-transparent block py-4 pl-4 rounded-l-3xl w-full z-20 text-sm border {window.theme('placeholder')} {window.theme('border')} {window.theme('input')}" placeholder="Search Ibrahim, Mary, Jannat, كتاب..." required />
+				<input type="search" id="search-input" value={searchQuery} class="bg-transparent block py-4 pl-4 rounded-l-3xl w-full z-20 text-sm border {window.theme('placeholder')} {window.theme('border')} {window.theme('input')}" placeholder={$t('search.placeholder')} required />
 			</div>
 			<button type="submit" title="Search" class="py-4 px-5 rounded-r-3xl items-center border {window.theme('border')} {window.theme('bgSecondaryLight')}">
 				<Search2 size={5} />
@@ -179,7 +180,7 @@
 	<!-- search instructions -->
 	{#if searchQuery.length === 0}
 		<div id="how-to-search" class="flex flex-col text-center text-xs space-y-2 max-w-2xl mx-auto">
-			<span>Search for any text, regardless of English or Arabic terminology, and find the nearest or related results. </span>
+			<span>{$t('search.hint')}</span>
 		</div>
 	{/if}
 
@@ -192,9 +193,9 @@
 			<div id="search-block">
 				<div id="search-results-information" class="text-center text-xs">
 					{#if resultsFound}
-						<span>Showing {totalResults >= 50 ? 'top ' : ''}{totalResults} {totalResults === 1 ? 'result' : 'results'} related to "{searchQuery}".</span>
+						<span>{$t('search.showing').replace('{total}', String(totalResults >= 50 ? 'top ' + totalResults : totalResults)).replace('{results}', totalResults === 1 ? $t('common.result') : $t('common.results')).replace('{query}', searchQuery)}</span>
 					{:else if !resultsFound && navigationResults.length === 0}
-						<div class="flex text-center items-center justify-center pt-18 text-xs max-w-2xl mx-auto">Unfortunately, your query did not yield any results. Please try using a different keyword.</div>
+						<div class="flex text-center items-center justify-center pt-18 text-xs max-w-2xl mx-auto">{$t('search.noResults')}</div>
 					{/if}
 				</div>
 
