@@ -19,6 +19,7 @@
 	import { __userSettings, __verseKey, __notesModalVisible, __tafsirModalVisible, __morphologyModalVisible, __verseTranslationModalVisible, __copyShareVerseModalVisible, __currentPage, __displayType, __userNotes, __fontType, __morphologyKey } from '$utils/stores';
 	import { updateSettings } from '$utils/updateSettings';
 	import { term } from '$utils/terminologies';
+	import { t } from '$utils/i18n';
 	import { sineIn } from 'svelte/easing';
 	import { fly } from 'svelte/transition';
 	import { checkOnlineAndAlert } from '$utils/offlineModeHandler';
@@ -85,7 +86,7 @@
 		{
 			id: 'play',
 			icon: Play,
-			text: 'Advanced Play',
+			text: $t('verse.advancedPlay'),
 			handler: handleAdvancedPlay,
 			analyticsEvent: 'Advanced Play Modal Button',
 			show: true
@@ -93,7 +94,7 @@
 		{
 			id: 'bookmark',
 			icon: isBookmarked ? BookmarkFilled : Bookmark,
-			text: isBookmarked ? 'Unbookmark' : 'Bookmark',
+			text: isBookmarked ? $t('verse.unbookmark') : $t('verse.bookmark'),
 			handler: handleBookmark,
 			analyticsEvent: 'Bookmark Verse Button',
 			show: true
@@ -101,7 +102,7 @@
 		{
 			id: 'notes',
 			icon: hasNotes ? NotesFilled : Notes,
-			text: 'Notes',
+			text: $t('verse.notes'),
 			handler: handleNotes,
 			analyticsEvent: 'Verse Notes Modal Button',
 			show: true
@@ -109,7 +110,7 @@
 		{
 			id: 'translation',
 			icon: VerseTranslation,
-			text: 'Translation',
+			text: $t('verse.translation'),
 			handler: handleTranslation,
 			analyticsEvent: 'Verse Translation Modal Button',
 			show: selectableDisplays[$__displayType].continuous
@@ -125,7 +126,7 @@
 		{
 			id: 'morphology',
 			icon: Morphology,
-			text: 'Morphology',
+			text: $t('verse.morphology'),
 			handler: handleMorphology,
 			analyticsEvent: 'Verse Morphology Modal Button',
 			show: true
@@ -133,7 +134,7 @@
 		{
 			id: 'copy',
 			icon: Copy,
-			text: 'Copy',
+			text: $t('common.copy'),
 			handler: handleCopy,
 			analyticsEvent: 'Copy Verse Modal Button',
 			show: !mushafFontTypes.includes($__fontType)
@@ -147,7 +148,7 @@
 					{
 						href: `/${chapter}?startVerse=${verse}`,
 						icon: ChapterMode,
-						text: `${term('chapter')} Mode`,
+						text: $t('verse.chapterMode').replace('{chapter}', term('chapter')),
 						analyticsEvent: 'Chapter Mode Button'
 					}
 				]
@@ -155,7 +156,7 @@
 					{
 						href: `/page/${page}`,
 						icon: Book,
-						text: 'Mushaf Mode',
+						text: $t('verse.mushafMode'),
 						analyticsEvent: 'Mushaf Mode Button'
 					}
 				];

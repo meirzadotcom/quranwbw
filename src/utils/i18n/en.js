@@ -190,6 +190,12 @@ const en = {
 	'verse.note': 'Note',
 	'verse.notes': 'Notes',
 	'verse.bookmark': 'Bookmark',
+	'verse.unbookmark': 'Unbookmark',
+	'verse.advancedPlay': 'Advanced Play',
+	'verse.translation': 'Translation',
+	'verse.morphology': 'Morphology',
+	'verse.chapterMode': '{chapter} Mode',
+	'verse.mushafMode': 'Mushaf Mode',
 	'verse.options': 'Options',
 	'verse.toggleWords': 'Toggle Words',
 

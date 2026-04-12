@@ -193,6 +193,12 @@ const id = {
 	'verse.note': 'Catatan',
 	'verse.notes': 'Catatan',
 	'verse.bookmark': 'Tandai',
+	'verse.unbookmark': 'Hapus Tanda',
+	'verse.advancedPlay': 'Putar Lanjutan',
+	'verse.translation': 'Terjemahan',
+	'verse.morphology': 'Morfologi',
+	'verse.chapterMode': 'Mode {chapter}',
+	'verse.mushafMode': 'Mode Mushaf',
 	'verse.options': 'Opsi',
 	'verse.toggleWords': 'Tampilkan/Sembunyikan Kata',
 
