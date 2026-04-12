@@ -10,6 +10,8 @@
 	import { updateSettings } from '$utils/updateSettings';
 	import { showConfirm } from '$utils/confirmationAlertHandler';
 	import { __verseKey, __notesModalVisible } from '$utils/stores';
+	import { t } from '$utils/i18n';
+	import { get } from 'svelte/store';
 
 	export let verse;
 	export let note;
@@ -65,7 +67,7 @@
 		event.preventDefault();
 		event.stopPropagation();
 
-		showConfirm(`Are you sure you want to delete this note (${verse})?`, null, () => {
+		showConfirm(`${get(t)('notes.deleteConfirm').replace('{verse}', verse)}`, null, () => {
 			updateSettings({
 				type: 'userNotes',
 				key: verse,
@@ -110,12 +112,12 @@
 		>
 			<DropdownItem class={dropdownItemClasses} on:click={handleEditNote}>
 				<EditIcon size={4} aria-hidden="true" />
-				<span>Edit</span>
+				<span>{$t('common.edit')}</span>
 			</DropdownItem>
 
 			<DropdownItem class={dropdownItemClasses} on:click={handleDeleteNote}>
 				<Trash size={4} aria-hidden="true" />
-				<span>Delete</span>
+				<span>{$t('common.delete')}</span>
 			</DropdownItem>
 		</Dropdown>
 	</Portal>

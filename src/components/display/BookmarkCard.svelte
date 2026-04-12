@@ -8,6 +8,8 @@
 	import { quranMetaData } from '$data/quranMeta';
 	import { updateSettings } from '$utils/updateSettings';
 	import { showConfirm } from '$utils/confirmationAlertHandler';
+	import { t } from '$utils/i18n';
+	import { get } from 'svelte/store';
 
 	export let bookmark;
 	export let fullQuranTextData = null;
@@ -54,7 +56,7 @@
 	function handleDeleteBookmark(event) {
 		event.stopPropagation();
 
-		showConfirm(`Are you sure you want to delete this bookmark (${bookmark})?`, null, () => {
+		showConfirm(`${get(t)('bookmarks.deleteConfirm').replace('{bookmark}', bookmark)}`, null, () => {
 			updateSettings({ type: 'userBookmarks', key: bookmark });
 			window.umami?.track('Delete Bookmark Menu');
 		});
@@ -75,7 +77,7 @@
 						{verseText}
 					</div>
 				{:catch _error}
-					<span class="text-xs opacity-50" role="alert">Failed to load verse</span>
+					<span class="text-xs opacity-50" role="alert">{$t('bookmarks.failedToLoad')}</span>
 				{/await}
 			</div>
 		{/if}
@@ -98,7 +100,7 @@
 		>
 			<DropdownItem class={dropdownItemClasses} on:click={handleDeleteBookmark}>
 				<Trash size={4} aria-hidden="true" />
-				<span>Delete</span>
+				<span>{$t('common.delete')}</span>
 			</DropdownItem>
 		</Dropdown>
 	</Portal>

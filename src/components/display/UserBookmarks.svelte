@@ -6,6 +6,7 @@
 	import { cdnStaticDataUrls } from '$data/websiteSettings';
 	import { fetchAndCacheJson } from '$utils/fetchData';
 	import { term } from '$utils/terminologies';
+    import { t } from '$utils/i18n';
 
 	export let cardGridClasses;
 	export let cardInnerClasses;
@@ -30,14 +31,18 @@
 	function handleScroll() {
 		forceCloseDropdowns += 1;
 	}
+
+	$: emptyPre = $t('bookmarks.emptyPre').replace('{verse}', term('verse'));
+	$: emptyPost = $t('bookmarks.emptyPost').replace('{verse}', term('verse')).replace('{verses}', term('verses'));
 </script>
 
 <ScrollableFadeContainer containerId="bookmark-cards" onScrollAction={handleScroll}>
 	{#if !hasBookmarks}
 		<div class="flex flex-row justify-start text-xs md:text-sm opacity-70 px-2">
 			<span class="leading-relaxed">
-				You haven't bookmarked any {term('verse')} yet! Start by clicking on the
-				<Bookmark classes="inline mt-[-4px] mx-1" /> icon for a {term('verse')}. It's a perfect way to return to the {term('verses')} that resonate with you.
+				{emptyPre}
+				<Bookmark classes="inline mt-[-4px] mx-1" />
+				{emptyPost}
 			</span>
 		</div>
 	{:else}
