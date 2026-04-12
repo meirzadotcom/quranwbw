@@ -7,10 +7,11 @@
 	import ErrorLoadingData from '$misc/ErrorLoadingData.svelte';
 	import { quranMetaData } from '$data/quranMeta';
 	import { morphologyDataUrls } from '$data/websiteSettings';
-	import { __currentPage, __fontType, __morphologyKey, __wordTranslation, __wordTransliteration, __offlineModeSettings } from '$utils/stores';
+	import { __currentPage, __fontType, __morphologyKey, __wordTranslation, __wordTransliteration, __offlineModeSettings, __uiLanguage } from '$utils/stores';
 	import { buttonClasses, buttonOutlineClasses } from '$data/commonClasses';
 	import { fetchChapterData, fetchAndCacheJson, fetchWordData } from '$utils/fetchData';
 	import { term } from '$utils/terminologies';
+	import { t } from '$utils/i18n';
 	import { wordAudioController } from '$utils/audioController';
 	import { fade } from 'svelte/transition';
 	import { isUserOnline } from '$utils/offlineModeHandler';
@@ -35,6 +36,9 @@
 		networkCheckPerformed = true;
 	});
 
+	// Language code for CDN URL — reads directly from __uiLanguage store
+	$: morphologyLang = $__uiLanguage || 'en';
+
 	// Extract chapter, verse, and word from the key, defaulting word to 1 if missing or invalid
 	$: {
 		const [chapterStr, verseStr, wordStr] = data.key.split(':');
@@ -55,8 +59,8 @@
 			preventStoreUpdate: true
 		}).then((data) => data[`${chapter}:${verse}`]);
 
-		// Fetch word summary data
-		const wordSummaryDataPromise = fetchAndCacheJson(morphologyDataUrls.getWordSummary(chapter), 'morphology').catch(() => ({}));
+		// Fetch word summary data — uses a language-specific CDN path when available, otherwise falls back to English
+		const wordSummaryDataPromise = fetchAndCacheJson(morphologyDataUrls.getWordSummary(chapter, morphologyLang), 'morphology').catch(() => ({}));
 
 		// Fetch word verbs data
 		const wordVerbsDataPromise = fetchAndCacheJson(morphologyDataUrls.wordVerbs, 'morphology').catch(() => ({}));
@@ -165,11 +169,11 @@
 
 						<!-- Buttons -->
 						<div class="pt-4 flex flex-row justify-center space-x-2 text-xs">
-							<button class={buttonClasses} on:click={() => wordAudioController({ key: $__morphologyKey })}>Play Word</button>
+							<button class={buttonClasses} on:click={() => wordAudioController({ key: $__morphologyKey })}>{$t('morphology.playWord')}</button>
 
 							<!-- Show the "goto verse" button if the user in on morphology page -->
 							{#if isMorphologyPage}
-								<a href="/{chapter}/{verse}" class={buttonClasses}>Goto Verse</a>
+								<a href="/{chapter}/{verse}" class={buttonClasses}>{$t('morphology.gotoVerse')}</a>
 							{/if}
 						</div>
 					</div>
@@ -185,11 +189,12 @@
 										<div class="relative grid gap-4 grid-cols-2 row-gap-3 md:row-gap-4 md:grid-cols-6">
 											{#each Object.entries(allData.wordVerbsData.data[$__morphologyKey]) as [key, value]}
 												{#if value !== null}
+													{@const verbLabel = $t('morphology.verbForm.' + key)}
 													<div class="flex flex-col py-5 duration-300 transform {window.theme('bgMain')} border {window.theme('border')} rounded-3xl shadow-sm text-center hover:-translate-y-2">
 														<div class="flex items-center justify-center mb-2">
 															<p id="verb-1" class="text-xl md:text-2xl pb-4 leading-5 arabic-font-1">{value}</p>
 														</div>
-														<p class="text-xs capitalize opacity-70">{key.replace('_', ' ')}</p>
+														<p class="text-xs capitalize opacity-70">{verbLabel !== ('morphology.verbForm.' + key) ? verbLabel : key.replace('_', ' ')}</p>
 													</div>
 												{/if}
 											{/each}

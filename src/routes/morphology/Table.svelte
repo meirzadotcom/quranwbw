@@ -7,10 +7,11 @@
 	import { __wordTranslation } from '$utils/stores';
 	import { buttonClasses, linkClasses } from '$data/commonClasses';
 	import { term } from '$utils/terminologies';
+	import { t } from '$utils/i18n';
 
-	const tableTitles = {
-		1: { title: 'with the same root' },
-		2: { title: 'appearing exactly' }
+	$: tableTitles = {
+		1: { title: $t('morphology.withSameRoot') },
+		2: { title: $t('morphology.appearingExactly') }
 	};
 
 	const params = new URLSearchParams(window.location.search);
@@ -35,17 +36,17 @@
 {#if totalAvailableWords > 0}
 	<div class="flex flex-col">
 		<div class="relative space-y-6 sm:rounded-3xl">
-			<h1 class="text-md md:text-2xl text-center">{totalAvailableWords} {totalAvailableWords > 1 ? 'words' : 'word'} {tableTitles[tableType].title}</h1>
+			<h1 class="text-md md:text-2xl text-center">{totalAvailableWords} {totalAvailableWords > 1 ? $t('morphology.words') : $t('morphology.word')} {tableTitles[tableType].title}</h1>
 			<div class="max-h-[32em] overflow-auto">
 				<table class="w-full text-sm text-left rtl:text-right rounded-md">
 					<thead class="text-xs uppercase top-0 {window.theme('bgSecondaryLight')}">
 						<tr>
 							<th class="px-6 py-3">#</th>
-							<th class="px-6 py-3">Word</th>
-							<th class="px-6 py-3">Translation</th>
-							<th class="px-6 py-3">Transliteration</th>
+							<th class="px-6 py-3">{$t('morphology.columnWord')}</th>
+							<th class="px-6 py-3">{$t('morphology.columnTranslation')}</th>
+							<th class="px-6 py-3">{$t('morphology.columnTransliteration')}</th>
 							<th class="px-6 py-3">{term('verse')}</th>
-							<th class="px-6 py-3">Word</th>
+							<th class="px-6 py-3">{$t('morphology.columnMorphology')}</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -73,7 +74,7 @@
 
 			{#if totalAvailableWords > maxResultsToLoad}
 				<div class="text-center text-xs {lastWordToLoad === totalAvailableWords && 'hidden'}">
-					<button on:click={updateLastWordToLoad} class={buttonClasses} data-umami-event="Morphology Load More Button"> Load more </button>
+					<button on:click={updateLastWordToLoad} class={buttonClasses} data-umami-event="Morphology Load More Button">{$t('morphology.loadMore')}</button>
 				</div>
 			{/if}
 		</div>
