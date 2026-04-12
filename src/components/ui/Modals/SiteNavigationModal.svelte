@@ -16,6 +16,7 @@
 	import { disabledClasses } from '$data/commonClasses';
 	import { __siteNavigationModalVisible, __settingsDrawerHidden, __tajweedRulesModalVisible, __currentPage } from '$utils/stores';
 	import { term } from '$utils/terminologies';
+	import { t } from '$utils/i18n';
 	import { getModalTransition } from '$utils/getModalTransition';
 	import { isUserOnline } from '$utils/offlineModeHandler';
 
@@ -57,7 +58,7 @@
 </script>
 
 <Modal id="siteNavigationModal" bind:open={$__siteNavigationModalVisible} transitionParams={getModalTransition('basic')} size="xs" class="rounded-3xl max-h-[90vh] flex flex-col" bodyClass="p-6 flex flex-col min-h-0 overflow-hidden" center outsideclose>
-	<h3 id="modal-title" class="mb-2 text-md font-semibold flex-shrink-0">Navigate</h3>
+	<h3 id="modal-title" class="mb-2 text-md font-semibold flex-shrink-0">{$t('common.navigate')}</h3>
 
 	<div class="flex-1 min-h-0 overflow-y-auto">
 		<div class="flex flex-col space-y-4">
@@ -67,7 +68,7 @@
 					<!-- Search -->
 					<a href="/search" class={`${linkClasses} ${!userOnline && disabledClasses}`} aria-disabled={!userOnline} tabindex={userOnline ? undefined : -1}>
 						<Search2 size={4} />
-						<span class={linkTextClasses}>Search</span>
+						<span class={linkTextClasses}>{$t('nav.search')}</span>
 					</a>
 
 					<!-- settings modal -->
@@ -79,19 +80,19 @@
 						class={linkClasses}
 					>
 						<Settings size={4} />
-						<span class={linkTextClasses}>Settings</span>
+						<span class={linkTextClasses}>{$t('nav.settings')}</span>
 					</button>
 
 					<!-- topics page link -->
 					<a href="/topics" class={linkClasses}>
 						<Topics size={4} />
-						<span class={linkTextClasses}>Topics</span>
+						<span class={linkTextClasses}>{$t('nav.topics')}</span>
 					</a>
 
 					<!-- Bookmarks -->
 					<a href="/bookmarks" class={linkClasses}>
 						<Bookmark size={4} />
-						<span class={linkTextClasses}>Bookmarks</span>
+						<span class={linkTextClasses}>{$t('nav.bookmarks')}</span>
 					</a>
 
 					<!-- tajweed rules modal -->
@@ -116,37 +117,37 @@
 					<!-- Morphology -->
 					<a href="/morphology?word=1:1:1" class={linkClasses}>
 						<Morphology size={4} />
-						<span class={linkTextClasses}>Morphology</span>
+						<span class={linkTextClasses}>{$t('nav.morphology')}</span>
 					</a>
 
 					<!-- Guess The Word -->
 					<a href="/games/guess-the-word" class={linkClasses}>
 						<Puzzle size={4} />
-						<span class={linkTextClasses}>Word Game</span>
+						<span class={linkTextClasses}>{$t('nav.wordGame')}</span>
 					</a>
 
 					<!-- changelog -->
 					<a href="/changelog" class={linkClasses}>
 						<Changelog size={4} />
-						<span class={linkTextClasses}>Changelog</span>
+						<span class={linkTextClasses}>{$t('nav.changelog')}</span>
 					</a>
 
 					<!-- About -->
 					<a href="/about" class={linkClasses}>
 						<About size={4} />
-						<span class={linkTextClasses}>About</span>
+						<span class={linkTextClasses}>{$t('nav.about')}</span>
 					</a>
 
 					<!-- Offline Mode page -->
 					<a href="/offline" class={linkClasses}>
 						<Offline size={4} />
-						<span class={linkTextClasses}>Offline Mode (Beta)</span>
+						<span class={linkTextClasses}>{$t('nav.offline')}</span>
 					</a>
 
 					<!-- legacy site link -->
 					<a href="https://old.quranwbw.com/" target="_blank" rel="noopener noreferrer" class={`${linkClasses} ${!userOnline && disabledClasses}`} aria-disabled={!userOnline} tabindex={userOnline ? undefined : -1} data-umami-event="Legacy Site Button">
 						<LegacySite size={4} />
-						<span class={linkTextClasses}>Old Website</span>
+						<span class={linkTextClasses}>{$t('nav.oldWebsite')}</span>
 					</a>
 				</div>
 			</div>

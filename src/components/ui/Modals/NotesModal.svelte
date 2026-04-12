@@ -8,6 +8,7 @@
 	import { updateSettings } from '$utils/updateSettings';
 	import { getModalTransition } from '$utils/getModalTransition';
 	import { showConfirm } from '$utils/confirmationAlertHandler';
+	import { t } from '$utils/i18n';
 
 	let verseNote,
 		noteModifiedAt,
@@ -40,10 +41,10 @@
 	// Update the button text accordingly
 	$: if ($__notesModalVisible) {
 		if (Object.prototype.hasOwnProperty.call($__userNotes, $__verseKey)) {
-			updateButtonText = 'Update';
+			updateButtonText = $t('common.update');
 			showDeleteButton = true;
 		} else {
-			updateButtonText = 'Save';
+			updateButtonText = $t('common.save');
 			showDeleteButton = false;
 		}
 	}
@@ -77,10 +78,10 @@
 	</h3>
 
 	<div class="flex-1 min-h-0 overflow-y-auto w-full pr-2">
-		<textarea id="notes-value" rows="8" value={verseNote} class="block p-2.5 w-full text-sm rounded-3xl bg-transparent border {window.theme('border')} {window.theme('input')} {window.theme('placeholder')} resize-none" placeholder="Write your thoughts here..."></textarea>
+		<textarea id="notes-value" rows="8" value={verseNote} class="block p-2.5 w-full text-sm rounded-3xl bg-transparent border {window.theme('border')} {window.theme('input')} {window.theme('placeholder')} resize-none" placeholder={$t('notes.placeholder')}></textarea>
 
 		{#if noteModifiedAt !== null}
-			<div id="notes-last-modified" class="text-xs mt-4">Modified {noteModifiedAt}.</div>
+			<div id="notes-last-modified" class="text-xs mt-4">{$t('notes.modified').replace('{timeAgo}', noteModifiedAt)}</div>
 		{/if}
 	</div>
 
@@ -90,7 +91,7 @@
 		</button>
 
 		{#if showDeleteButton}
-			<button on:click={() => showConfirm('Are you sure you want to reset this note? This action cannot be undone.', 'notesModal', () => resetNote())} class="w-fit {buttonClasses}">
+			<button on:click={() => showConfirm($t('notes.resetConfirm'), 'notesModal', () => resetNote())} class="w-fit {buttonClasses}">
 				<span><Trash size={5} /></span>
 			</button>
 		{/if}

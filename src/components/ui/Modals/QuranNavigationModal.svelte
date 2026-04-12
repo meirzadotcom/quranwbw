@@ -5,8 +5,9 @@
 	import Spinner from '$svgs/Spinner.svelte';
 	import Search from '$svgs/Search.svelte';
 	import { quranMetaData, startPageOfChapters, pageNumberKeys, juzMeta, mostRead } from '$data/quranMeta';
+	import { getChapterTranslation } from '$data/quranChapterTranslations';
 	import { buttonClasses } from '$data/commonClasses';
-	import { __chapterNumber, __pageURL, __currentPage, __pageNumber, __quranNavigationModalVisible, __lastRead, __morphologyKey, __wideWesbiteLayoutEnabled } from '$utils/stores';
+	import { __chapterNumber, __pageURL, __currentPage, __pageNumber, __quranNavigationModalVisible, __lastRead, __morphologyKey, __wideWesbiteLayoutEnabled, __uiLanguage } from '$utils/stores';
 	import { inview } from 'svelte-inview';
 	import { validateKey } from '$utils/validateKey';
 	import { cdnStaticDataUrls } from '$data/websiteSettings';
@@ -251,7 +252,7 @@
 										{#each Object.entries(value) as [key, value]}
 											<div class={linkClasses}>
 												<span>{@html '&#10230'}</span>
-												<a href="/{key}" class={linkTextClasses}>{term('chapter')} {value.transliteration} <span class="hidden md:inline-block">({value.translation})</span></a>
+												<a href="/{key}" class={linkTextClasses}>{term('chapter')} {value.transliteration} <span class="hidden md:inline-block">({getChapterTranslation(+key, $__uiLanguage)})</span></a>
 											</div>
 										{/each}
 									{/if}
@@ -289,9 +290,9 @@
 											{chapter + 1}. {quranMetaData[chapter + 1].transliteration}
 
 											{#if $__currentPage === 'chapter'}
-												<span class="hidden md:inline-block">({quranMetaData[chapter + 1].translation})</span>
+												<span class="hidden md:inline-block">({getChapterTranslation(chapter + 1, $__uiLanguage)})</span>
 											{:else}
-												<span>({quranMetaData[chapter + 1].translation})</span>
+												<span>({getChapterTranslation(chapter + 1, $__uiLanguage)})</span>
 											{/if}
 										</div>
 									</a>

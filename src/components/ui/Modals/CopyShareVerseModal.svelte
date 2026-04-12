@@ -6,6 +6,7 @@
 	import { __verseKey, __copyShareVerseModalVisible, __verseTranslationData } from '$utils/stores';
 	import { linkClasses, buttonClasses, selectedRadioOrCheckboxClasses } from '$data/commonClasses';
 	import { term } from '$utils/terminologies';
+	import { t } from '$utils/i18n';
 	import { getModalTransition } from '$utils/getModalTransition';
 	import { selectableVerseTranslations } from '$data/options';
 
@@ -163,26 +164,26 @@
 	<div class="flex-1 min-h-0 overflow-y-auto w-full pr-2">
 		<!-- Copy Type -->
 		<div class="flex flex-col space-y-4 py-4">
-			<span class="text-sm">Type</span>
+			<span class="text-sm">{$t('copyShare.type')}</span>
 			<div class="flex flex-row space-x-2">
 				<div class="flex items-center">
 					<Radio bind:group={copyType} value={1} custom>
 						<div class="{radioClasses} {copyType === 1 && selectedRadioOrCheckboxClasses}">
-							<div class="w-full">Text</div>
+							<div class="w-full">{$t('copyShare.text')}</div>
 						</div>
 					</Radio>
 				</div>
 				<div class="flex items-center">
 					<Radio bind:group={copyType} value={2} custom>
 						<div class="{radioClasses} {copyType === 2 && selectedRadioOrCheckboxClasses}">
-							<div class="w-full">Link</div>
+							<div class="w-full">{$t('copyShare.link')}</div>
 						</div>
 					</Radio>
 				</div>
 				<div class="flex items-center">
 					<Radio bind:group={copyType} value={3} custom>
 						<div class="{radioClasses} {copyType === 3 && selectedRadioOrCheckboxClasses}">
-							<div class="w-full">Advanced</div>
+							<div class="w-full">{$t('copyShare.advanced')}</div>
 						</div>
 					</Radio>
 				</div>
@@ -192,9 +193,9 @@
 			{#if copyType !== 3}
 				<span class="flex flex-col space-y-3 text-xs opacity-70">
 					{#if copyType === 1}
-						<span>Copy the Arabic text of the {term('verse')} only.</span>
+						<span>{$t('copyShare.copyArabicOnly').replace('{verse}', term('verse'))}</span>
 					{:else if copyType === 2}
-						<span>Copy the website link of the {term('verse')} only.</span>
+						<span>{$t('copyShare.copyLinkOnly').replace('{verse}', term('verse'))}</span>
 					{/if}
 				</span>
 			{/if}
@@ -207,26 +208,26 @@
 				<div class="flex flex-col">
 					<!-- Arabic/Translation/Both -->
 					<div class="flex flex-col space-y-4 py-4 border-t {window.theme('border')}">
-						<span class="text-sm">Text</span>
+						<span class="text-sm">{$t('copyShare.text')}</span>
 						<div class="flex flex-row space-x-2">
 							<div class="flex items-center">
 								<Radio bind:group={textType} value={1} custom>
 									<div class="{radioClasses} {textType === 1 && selectedRadioOrCheckboxClasses}">
-										<div class="w-full">Arabic</div>
+										<div class="w-full">{$t('copyShare.arabic')}</div>
 									</div>
 								</Radio>
 							</div>
 							<div class="flex items-center">
 								<Radio bind:group={textType} value={2} custom>
 									<div class="{radioClasses} {textType === 2 && selectedRadioOrCheckboxClasses}">
-										<div class="w-full">Translation</div>
+										<div class="w-full">{$t('copyShare.translation')}</div>
 									</div>
 								</Radio>
 							</div>
 							<div class="flex items-center">
 								<Radio bind:group={textType} value={3} custom>
 									<div class="{radioClasses} {textType === 3 && selectedRadioOrCheckboxClasses}">
-										<div class="w-full">Both</div>
+										<div class="w-full">{$t('copyShare.both')}</div>
 									</div>
 								</Radio>
 							</div>
@@ -237,21 +238,21 @@
 				<!-- Other Options -->
 				<div class="flex flex-col space-y-2 py-4 border-t {window.theme('border')}">
 					<Checkbox checked={includeKey} on:click={() => (includeKey = !includeKey)} class="space-x-2 pb-2 font-normal {window.theme('bgMain')}">
-						<span>Include {term('chapter')} Name & {term('verse')} Key</span>
+						<span>{$t('copyShare.includeChapterVerse').replace('{chapter}', term('chapter')).replace('{verse}', term('verse'))}</span>
 					</Checkbox>
 
 					{#if textType === 2 || textType === 3}
 						<Checkbox checked={includeTranslationNames} on:click={() => (includeTranslationNames = !includeTranslationNames)} class="space-x-2 pb-2 font-normal {window.theme('bgMain')}">
-							<span>Include Author Names</span>
+							<span>{$t('copyShare.includeAuthor')}</span>
 						</Checkbox>
 
 						<Checkbox checked={includeFootNotes} on:click={() => (includeFootNotes = !includeFootNotes)} class="space-x-2 pb-2 font-normal {window.theme('bgMain')}">
-							<span>Include Footnotes</span>
+							<span>{$t('copyShare.includeFootnotes')}</span>
 						</Checkbox>
 					{/if}
 
 					<Checkbox checked={includeLink} on:click={() => (includeLink = !includeLink)} class="space-x-2 pb-2 font-normal {window.theme('bgMain')}">
-						<span>Include Website Link</span>
+						<span>{$t('copyShare.includeLink')}</span>
 					</Checkbox>
 				</div>
 			</div>
@@ -260,16 +261,16 @@
 		{#if generatedVerseData !== ''}
 			<div class="text-xs opacity-70 mb-6 text-left">
 				{#if copyType === 1 || copyType === 3}
-					<span>Text copied to clipboard.</span>
-					<button on:click={downloadTextFile(`quran-${chapter}-${verse}`, generatedVerseData)} class={linkClasses} data-umami-event="Download Verse File Button">Click here to download it as a file.</button>
+					<span>{$t('copyShare.textCopied')}</span>
+					<button on:click={downloadTextFile(`quran-${chapter}-${verse}`, generatedVerseData)} class={linkClasses} data-umami-event="Download Verse File Button">{$t('copyShare.downloadFile')}</button>
 				{:else}
-					<span>Link copied to clipboard.</span>
+					<span>{$t('copyShare.linkCopied')}</span>
 				{/if}
 			</div>
 		{/if}
 	</div>
 
 	<div class="flex-shrink-0 mt-4">
-		<button class="w-full {buttonClasses}" on:click={processAndCopyVerseData} data-umami-event="Copy Verse Button">Copy</button>
+		<button class="w-full {buttonClasses}" on:click={processAndCopyVerseData} data-umami-event="Copy Verse Button">{$t('common.copy')}</button>
 	</div>
 </Modal>
