@@ -3,6 +3,8 @@
 	import Madinah from '$svgs/Madinah.svelte';
 	import Tooltip from '$ui/FlowbiteSvelte/tooltip/Tooltip.svelte';
 	import { quranMetaData } from '$data/quranMeta';
+	import { getChapterTranslation } from '$data/quranChapterTranslations';
+	import { __uiLanguage } from '$utils/stores';
 	import { term } from '$utils/terminologies';
 
 	export let type = 'chapter'; // 'chapter' | 'juz' | 'hizb'
@@ -57,7 +59,7 @@
 						</Tooltip>
 					</div>
 					<!-- chapter translation -->
-					<div class="block text-xs truncate opacity-70">{quranMetaData[id].translation}</div>
+					<div class="block text-xs truncate opacity-70">{getChapterTranslation(id, $__uiLanguage)}</div>
 					<!-- chapter verse count -->
 					<div class="block text-xs opacity-70">{quranMetaData[id].verses} {term('verses')}</div>
 				{/if}

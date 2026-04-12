@@ -14,6 +14,7 @@
 	import { __currentPage, __userSettings, __audioSettings, __verseKey, __userNotes, __notesModalVisible, __playButtonsFunctionality, __displayType, __verseWordBlocks } from '$utils/stores';
 	import { updateSettings } from '$utils/updateSettings';
 	import { term } from '$utils/terminologies';
+	import { t } from '$utils/i18n';
 	import { quranMetaData } from '$data/quranMeta';
 
 	const chapter = parseInt(key.split(':')[0], 10);
@@ -86,12 +87,12 @@
 		<!-- other verse buttons -->
 		<div class="flex flex-row space-x-2">
 			<!-- play verse button -->
-			<button on:click={() => audioHandler(key)} class={buttonClasses} aria-label="Play">
+			<button on:click={() => audioHandler(key)} class={buttonClasses} aria-label={$t('verse.play')}>
 				<div>
 					<svelte:component this={$__audioSettings.isPlaying && $__audioSettings.playingKey === key ? Pause : Play} size={3.5} />
 				</div>
 			</button>
-			<Tooltip arrow={false} type="light" placement="top" class="z-30 hidden md:block font-normal">Play</Tooltip>
+			<Tooltip arrow={false} type="light" placement="top" class="z-30 hidden md:block font-normal">{$t('verse.play')}</Tooltip>
 
 			<!-- notes button -->
 			{#if Object.prototype.hasOwnProperty.call($__userNotes, key)}
@@ -101,43 +102,43 @@
 						__notesModalVisible.set(true);
 					}}
 					class={buttonClasses}
-					aria-label="Note"
+					aria-label={$t('verse.note')}
 				>
 					<div><NotesFilled size={3.5} /></div>
 				</button>
-				<Tooltip arrow={false} type="light" placement="top" class="z-30 hidden md:block font-normal">Notes</Tooltip>
+				<Tooltip arrow={false} type="light" placement="top" class="z-30 hidden md:block font-normal">{$t('verse.notes')}</Tooltip>
 			{/if}
 
 			<!-- bookmark/unbookmark button -->
 			{#if userBookmarks.includes(key)}
-				<button on:click={() => updateSettings({ type: 'userBookmarks', key, set: true })} class={buttonClasses} aria-label="Bookmark">
+				<button on:click={() => updateSettings({ type: 'userBookmarks', key, set: true })} class={buttonClasses} aria-label={$t('verse.bookmark')}>
 					<div>
 						<svelte:component this={userBookmarks.includes(key) ? BookmarkFilled : Bookmark} size={3.5} />
 					</div>
 				</button>
-				<Tooltip arrow={false} type="light" placement="top" class="z-30 hidden md:block font-normal">Bookmark</Tooltip>
+				<Tooltip arrow={false} type="light" placement="top" class="z-30 hidden md:block font-normal">{$t('verse.bookmark')}</Tooltip>
 			{/if}
 
 			<!-- verses option dropdown -->
-			<button id="verse-options-{verse}" class={buttonClasses} aria-label="Options" on:mouseenter={__verseKey.set(key)} on:click={__verseKey.set(key)}>
+			<button id="verse-options-{verse}" class={buttonClasses} aria-label={$t('verse.options')} on:mouseenter={__verseKey.set(key)} on:click={__verseKey.set(key)}>
 				<div>
 					<DotsHorizontal size={6} />
 				</div>
 			</button>
 			<VerseOptionsDropdown page={value.meta.page} />
-			<Tooltip triggeredBy="#verse-options-{verse}" arrow={false} type="light" placement="top" class="z-30 hidden md:block font-normal">Options</Tooltip>
+			<Tooltip triggeredBy="#verse-options-{verse}" arrow={false} type="light" placement="top" class="z-30 hidden md:block font-normal">{$t('verse.options')}</Tooltip>
 		</div>
 	</div>
 
 	<!-- words block toggle button for display #7 -->
 	{#if $__displayType === 7}
 		<div class="flex flex-row">
-			<button class={buttonClasses} aria-label="Toggle Words" on:click={() => wordsBlockToggler(chapter, verse)}>
+			<button class={buttonClasses} aria-label={$t('verse.toggleWords')} on:click={() => wordsBlockToggler(chapter, verse)}>
 				<div>
 					<Eye />
 				</div>
 			</button>
-			<Tooltip arrow={false} type="light" placement="top" class="z-30 hidden md:block font-normal">Toggle Words</Tooltip>
+			<Tooltip arrow={false} type="light" placement="top" class="z-30 hidden md:block font-normal">{$t('verse.toggleWords')}</Tooltip>
 		</div>
 	{/if}
 </div>
