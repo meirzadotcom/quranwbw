@@ -5,6 +5,7 @@
 	import { __audioSettings } from '$utils/stores';
 	import { playVerseAudio, setVersesToPlay, resetAudioSettings } from '$utils/audioController';
 	import { checkOnlineAndAlert } from '$utils/offlineModeHandler';
+	import { t } from '$utils/i18n';
 
 	// quick play from first verse of page till the max chapter verses
 	async function audioHandler() {
@@ -29,9 +30,9 @@
 
 <!-- play/pause button -->
 <div class="flex items-center justify-center">
-	<button type="button" title={$__audioSettings.isPlaying ? 'Pause' : 'Play'} on:click={() => audioHandler()} class="inline-flex flex-col items-center justify-center w-12 h-12 rounded-full group {window.theme('input')} {window.theme('bgSecondaryDark')}" data-umami-event="Toolbar Play Button">
+	<button type="button" title={$__audioSettings.isPlaying ? $t('audio.pause') : $t('audio.play')} on:click={() => audioHandler()} class="inline-flex flex-col items-center justify-center w-12 h-12 rounded-full group {window.theme('input')} {window.theme('bgSecondaryDark')}" data-umami-event="Toolbar Play Button">
 		<span><svelte:component this={$__audioSettings.isPlaying ? PauseSolid : PlaySolid} size={5} /></span>
-		<span class="sr-only">{$__audioSettings.isPlaying ? 'Pause' : 'Play'}</span>
+		<span class="sr-only">{$__audioSettings.isPlaying ? $t('audio.pause') : $t('audio.play')}</span>
 
 		<!-- show badge when a verse is playing -->
 		{#if $__audioSettings.isPlaying && $__audioSettings.audioType === 'verse'}
