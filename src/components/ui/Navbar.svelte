@@ -3,9 +3,11 @@
 	import Home from '$svgs/Home.svelte';
 	import ChevronDown from '$svgs/ChevronDown.svelte';
 	import { quranMetaData } from '$data/quranMeta';
-	import { __chapterNumber, __currentPage, __lastRead, __topNavbarVisible, __pageNumber, __morphologyKey, __mushafPageDivisions, __siteNavigationModalVisible, __quranNavigationModalVisible, __wideWesbiteLayoutEnabled } from '$utils/stores';
+	import { __chapterNumber, __currentPage, __lastRead, __topNavbarVisible, __pageNumber, __morphologyKey, __mushafPageDivisions, __siteNavigationModalVisible, __quranNavigationModalVisible, __wideWesbiteLayoutEnabled, __uiLanguage } from '$utils/stores';
 	import { term } from '$utils/terminologies';
 	import { getWebsiteWidth } from '$utils/getWebsiteWidth';
+	import { t } from '$utils/i18n';
+	import { getChapterTranslation } from '$data/quranChapterTranslations';
 	import Mecca from '$svgs/Mecca.svelte';
 	import Madinah from '$svgs/Madinah.svelte';
 
@@ -51,7 +53,7 @@
 
 		// Only show the translation if it's different from the transliteration
 		if (quranMetaData[$__chapterNumber].transliteration !== quranMetaData[$__chapterNumber].translation) {
-			navbarChapterName += `<span class="hidden md:inline-block">&nbsp;(${quranMetaData[$__chapterNumber].translation})</span>`;
+			navbarChapterName += `<span class="hidden md:inline-block">&nbsp;(${getChapterTranslation($__chapterNumber, $__uiLanguage)})</span>`;
 		}
 	}
 
@@ -71,10 +73,10 @@
 </script>
 
 <nav id="navbar" class={navbarClasses}>
-	<div id="top-nav" class={topNavClasses} aria-label="Home">
-		<a href="/" class="flex flex-row items-center p-3 cursor-pointer rounded-3xl {window.theme('hoverBorder')} {window.theme('bgSecondaryLight')}" aria-label="Home">
+	<div id="top-nav" class={topNavClasses} aria-label={$t('nav.home')}>
+		<a href="/" class="flex flex-row items-center p-3 cursor-pointer rounded-3xl {window.theme('hoverBorder')} {window.theme('bgSecondaryLight')}" aria-label={$t('nav.home')}>
 			<Home />
-			<span class="text-xs pl-2 hidden md:block">Home</span>
+			<span class="text-xs pl-2 hidden md:block">{$t('nav.home')}</span>
 		</a>
 
 		<button class="flex items-center p-3 text-sm w-auto p-2 rounded-3xl {window.theme('hoverBorder')} {window.theme('hover')}" on:click={() => __quranNavigationModalVisible.set(true)} data-umami-event="Navbar Navigation Button">
@@ -86,7 +88,7 @@
 
 			<!-- display only the page name for mushaf page -->
 			{#if $__currentPage === 'mushaf'}
-				Page {$__pageNumber}
+				{$t('nav.page')} {$__pageNumber}
 				<ChevronDown />
 			{/if}
 
@@ -98,7 +100,7 @@
 
 			<!-- display Quranic+supplication term for supplications page -->
 			{#if $__currentPage === 'supplications'}
-				Quranic {term('supplications')}
+				{$t('nav.quranic')} {term('supplications')}
 			{/if}
 
 			<!-- display only the page name for non-chapter page -->
@@ -112,8 +114,8 @@
 			{/if}
 		</button>
 
-		<button class="flex flex-row items-center p-3 cursor-pointer rounded-3xl {window.theme('hoverBorder')} {window.theme('bgSecondaryLight')}" type="button" aria-label="Menu" on:click={() => __siteNavigationModalVisible.set(true)}>
-			<span class="text-xs pr-2 hidden md:block">Menu</span>
+		<button class="flex flex-row items-center p-3 cursor-pointer rounded-3xl {window.theme('hoverBorder')} {window.theme('bgSecondaryLight')}" type="button" aria-label={$t('nav.menu')} on:click={() => __siteNavigationModalVisible.set(true)}>
+			<span class="text-xs pr-2 hidden md:block">{$t('nav.menu')}</span>
 			<Menu />
 		</button>
 	</div>
@@ -132,7 +134,7 @@
 				</span>
 			</div>
 			<div class="flex flex-row items-center py-2">
-				<span>{lastReadPage ? `Page ${lastReadPage}` : '...'}</span>
+				<span>{lastReadPage ? `${$t('nav.page')} ${lastReadPage}` : '...'}</span>
 				<span class="px-1 opacity-30">&#8226;</span>
 				<span>{lastReadJuz ? `${term('juz')} ${lastReadJuz}` : '...'}</span>
 			</div>
@@ -146,7 +148,7 @@
 		<div id="bottom-nav" class={`${getWebsiteWidth($__wideWesbiteLayoutEnabled)} flex flex-row items-center justify-between border-t ${window.theme('border')} text-xs mx-auto px-6`}>
 			<div class="flex flex-row items-center py-2 truncate">
 				{#if !$__topNavbarVisible}
-					<span>Page {$__pageNumber} -&nbsp;</span>
+					<span>{$t('nav.page')} {$__pageNumber} -&nbsp;</span>
 				{/if}
 				<span class="flex items-center">
 					{#if mushafChapterInfo.length ?? false}
