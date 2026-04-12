@@ -1,4 +1,5 @@
 <script>
+	import UILanguageSelector from '$ui/SettingsDrawer/UILanguageSelector.svelte';
 	import WebsiteThemeSelector from '$ui/SettingsDrawer/WebsiteThemeSelector.svelte';
 	import DisplayTypeSelector from '$ui/SettingsDrawer/DisplayTypeSelector.svelte';
 	import WordTooltipSelector from '$ui/SettingsDrawer/WordTooltipSelector.svelte';
@@ -39,10 +40,11 @@
 		__playButtonsFunctionality,
 		__wordMorphologyOnClick,
 		__wideWesbiteLayoutEnabled,
-		__signLanguageModeEnabled
+		__signLanguageModeEnabled,
+		__uiLanguage
 	} from '$utils/stores';
 
-	import { selectableDisplays, selectableFontTypes, selectableThemes, selectableWordTranslations, selectableWordTransliterations, selectableVerseTranslations, selectableReciters, selectablePlaybackSpeeds, selectableTooltipOptions, selectableFontSizes, selectableVersePlayButtonOptions } from '$data/options';
+	import { selectableDisplays, selectableFontTypes, selectableThemes, selectableWordTranslations, selectableWordTransliterations, selectableVerseTranslations, selectableReciters, selectablePlaybackSpeeds, selectableTooltipOptions, selectableFontSizes, selectableVersePlayButtonOptions, selectableUILanguages } from '$data/options';
 
 	import { updateSettings } from '$utils/updateSettings';
 	import { resetSettings } from '$utils/resetSettings';
@@ -51,6 +53,7 @@
 	import { sineIn } from 'svelte/easing';
 	import { fly } from 'svelte/transition';
 	import { term } from '$utils/terminologies';
+	import { t } from '$utils/i18n';
 	import { getTailwindBreakpoint } from '$utils/getTailwindBreakpoint';
 	import { importSettings, exportSettings } from '$utils/settingsManager';
 	import { showConfirm } from '$utils/confirmationAlertHandler';
@@ -58,6 +61,7 @@
 
 	// Components mapping for individual settings ([component, check internet first (true/false)])
 	const individualSettingsComponents = {
+		'ui-language': [UILanguageSelector, false],
 		'website-theme': [WebsiteThemeSelector, false],
 		'display-type': [DisplayTypeSelector, false],
 		'word-tooltip': [WordTooltipSelector, false],
@@ -218,22 +222,33 @@
 	{#if showAllSettings}
 		<div id="all-settings">
 			<div class="flex z-30 top-0 sticky {window.theme('bgMain')} border-b-2 {window.theme('border')} mb-4 {settingsDrawerOpacity}">
-				<h5 id="drawer-label" class="inline-flex items-center my-4 text-3xl font-semibold">Settings</h5>
+				<h5 id="drawer-label" class="inline-flex items-center my-4 text-3xl font-semibold">{$t('settings.title')}</h5>
 				<CloseButton on:click={() => ($__settingsDrawerHidden = true)} class="my-4 rounded-3xl" />
 			</div>
 
 			<!-- display-settings-block -->
 			<div id="display-settings-block" class="py-5 {settingsDrawerOpacity}">
-				<h3 class="block mb-2 font-medium text-xl">Display</h3>
+				<h3 class="block mb-2 font-medium text-xl">{$t('settings.display')}</h3>
 
 				<div class="flex flex-col flex-wrap text-base">
+					<!-- ui-language-setting -->
+					<div id="ui-language-setting" class={settingsBlockClasses}>
+						<div class="flex flex-row justify-between items-center">
+							<div class="block">{$t('settings.language.label')}</div>
+							<button class={selectorClasses} on:click={() => gotoIndividualSetting('ui-language')}>{selectableUILanguages[$__uiLanguage]?.name ?? 'English'}</button>
+						</div>
+						<p class={settingsDescriptionClasses}>{$t('settings.language.desc')}</p>
+					</div>
+
+					<div class="border-b {window.theme('border')}"></div>
+
 					<!-- website-theme-setting -->
 					<div id="website-theme-setting" class={settingsBlockClasses}>
 						<div class="flex flex-row justify-between items-center">
-							<div class="block">Theme</div>
+							<div class="block">{$t('settings.theme.label')}</div>
 							<button class={selectorClasses} on:click={() => gotoIndividualSetting('website-theme')}>{selectableThemes[$__websiteTheme].name}</button>
 						</div>
-						<p class={settingsDescriptionClasses}>An assortment of website themes to please your vision.</p>
+						<p class={settingsDescriptionClasses}>{$t('settings.theme.desc')}</p>
 					</div>
 
 					<div class="border-b {window.theme('border')}"></div>
@@ -241,10 +256,10 @@
 					<!-- display-type-setting -->
 					<div id="display-type-setting" class={settingsBlockClasses}>
 						<div class="flex flex-row justify-between items-center">
-							<div class="block">Display Type</div>
+							<div class="block">{$t('settings.displayType.label')}</div>
 							<button class={selectorClasses} on:click={() => gotoIndividualSetting('display-type')}>{selectableDisplays[$__displayType].displayName}</button>
 						</div>
-						<p class={settingsDescriptionClasses}>Different {term('verse')} layouts that you can choose from.</p>
+						<p class={settingsDescriptionClasses}>{$t('settings.displayType.desc').replace('{verse}', term('verse'))}</p>
 					</div>
 
 					<div class="border-b {window.theme('border')}"></div>
@@ -252,10 +267,10 @@
 					<!-- word-tooltip-setting -->
 					<div id="word-tooltip-setting" class={settingsBlockClasses}>
 						<div class="flex flex-row justify-between items-center">
-							<div class="block">Word Tooltip</div>
+							<div class="block">{$t('settings.wordTooltip.label')}</div>
 							<button class={selectorClasses} on:click={() => gotoIndividualSetting('word-tooltip')}>{selectableTooltipOptions[$__wordTooltip].name}</button>
 						</div>
-						<p class={settingsDescriptionClasses}>Choose what is displayed when you hover a word.</p>
+						<p class={settingsDescriptionClasses}>{$t('settings.wordTooltip.desc')}</p>
 					</div>
 
 					<div class="border-b {window.theme('border')}"></div>
@@ -263,14 +278,14 @@
 					<!-- word-translation-toggle-setting -->
 					<div id="word-translation-toggle-setting" class={settingsBlockClasses}>
 						<div class="flex flex-row justify-between items-center">
-							<span class="block">Word Translation</span>
+							<span class="block">{$t('settings.wordTranslationToggle.label')}</span>
 
 							<label class="inline-flex items-center cursor-pointer {$__wordTransliterationEnabled === false && disabledClasses}">
 								<input type="checkbox" value="" class="sr-only peer" checked={$__wordTranslationEnabled} on:click={(event) => updateSettings({ type: 'wordTranslationEnabled', value: event.target.checked })} />
 								<div class={toggleBtnClasses}></div>
 							</label>
 						</div>
-						<p class={settingsDescriptionClasses}>Toggle the word translation which is shown below the Arabic word.</p>
+						<p class={settingsDescriptionClasses}>{$t('settings.wordTranslationToggle.desc')}</p>
 					</div>
 
 					<div class="border-b {window.theme('border')}"></div>
@@ -278,13 +293,13 @@
 					<!-- word-transliteration-toggle-setting -->
 					<div id="word-transliteration-toggle-setting" class="{settingsBlockClasses} {$__signLanguageModeEnabled && disabledClasses}">
 						<div class="flex flex-row justify-between items-center">
-							<span class="block">Word Transliteration</span>
+							<span class="block">{$t('settings.wordTransliterationToggle.label')}</span>
 							<label class="inline-flex items-center cursor-pointer {$__wordTranslationEnabled === false && disabledClasses}">
 								<input type="checkbox" value="" class="sr-only peer" checked={$__wordTransliterationEnabled} on:click={(event) => updateSettings({ type: 'wordTransliterationEnabled', value: event.target.checked })} />
 								<div class={toggleBtnClasses}></div>
 							</label>
 						</div>
-						<p class={settingsDescriptionClasses}>Toggle the word transliteration which is shown below the Arabic word.</p>
+						<p class={settingsDescriptionClasses}>{$t('settings.wordTransliterationToggle.desc')}</p>
 					</div>
 
 					<!-- prevent sleep toggle, only show if the browser supports it  -->
@@ -294,13 +309,13 @@
 						<!-- prevent-sleep-toggle-setting -->
 						<div id="prevent-sleep-toggle-setting" class={settingsBlockClasses}>
 							<div class="flex flex-row justify-between items-center">
-								<span class="block">Prevent Sleep</span>
+								<span class="block">{$t('settings.preventSleep.label')}</span>
 								<label class="inline-flex items-center cursor-pointer">
 									<input type="checkbox" value="" class="sr-only peer" checked={$__wakeLockEnabled} on:click={(event) => __wakeLockEnabled.set(event.target.checked)} data-umami-event="Toggle Prevent Sleep" />
 									<div class={toggleBtnClasses}></div>
 								</label>
 							</div>
-							<p class={settingsDescriptionClasses}>Enabling this option will prevent your screen from dimming or sleeping. Please note that you will need to manually enable this option for each session.</p>
+							<p class={settingsDescriptionClasses}>{$t('settings.preventSleep.desc')}</p>
 						</div>
 					{/if}
 
@@ -309,13 +324,13 @@
 					<!-- wide-website-layout-setting -->
 					<div id="wide-website-layout-setting" class={settingsBlockClasses}>
 						<div class="flex flex-row justify-between items-center">
-							<span class="block">Wide Website Layout</span>
+							<span class="block">{$t('settings.wideLayout.label')}</span>
 							<label class="inline-flex items-center cursor-pointer {$__wordTranslationEnabled === false && disabledClasses}">
 								<input type="checkbox" value="" class="sr-only peer" checked={$__wideWesbiteLayoutEnabled} on:click={(event) => updateSettings({ type: 'wideWesbiteLayoutEnabled', value: event.target.checked })} />
 								<div class={toggleBtnClasses}></div>
 							</label>
 						</div>
-						<p class={settingsDescriptionClasses}>Enable this to use a wider layout (extra large width). Best for larger screens.</p>
+						<p class={settingsDescriptionClasses}>{$t('settings.wideLayout.desc')}</p>
 					</div>
 
 					<div class="border-b {window.theme('border')}"></div>
@@ -323,29 +338,29 @@
 					<!-- arabic-sign-language-setting -->
 					<div id="arabic-sign-language-setting" class={settingsBlockClasses}>
 						<div class="flex flex-row justify-between items-center">
-							<span class="block">Arabic Sign Language</span>
+							<span class="block">{$t('settings.signLanguage.label')}</span>
 							<label class="inline-flex items-center cursor-pointer {$__wordTranslationEnabled === false && disabledClasses}">
 								<input type="checkbox" value="" class="sr-only peer" checked={$__signLanguageModeEnabled} on:click={(event) => updateSettings({ type: 'signLanguageModeEnabled', value: event.target.checked })} />
 								<div class={toggleBtnClasses}></div>
 							</label>
 						</div>
-						<p class={settingsDescriptionClasses}>Enable this to switch the Quran view to Arabic Sign Language mode. The Indonesian Isep Misbah Digital font will be used, and some options will be disabled.</p>
+						<p class={settingsDescriptionClasses}>{$t('settings.signLanguage.desc')}</p>
 					</div>
 				</div>
 			</div>
 
 			<!-- font-settings-block -->
 			<div id="font-settings-block" class="py-5 border-t-2 {window.theme('border')}">
-				<h3 class="block mb-2 font-medium text-xl {settingsDrawerOpacity}">Font</h3>
+				<h3 class="block mb-2 font-medium text-xl {settingsDrawerOpacity}">{$t('settings.font')}</h3>
 
 				<div class="flex flex-col flex-wrap text-base">
 					<!-- quran-font-setting -->
 					<div id="quran-font-setting" class="{settingsBlockClasses} {settingsDrawerOpacity} {$__signLanguageModeEnabled && disabledClasses}">
 						<div class="flex flex-row justify-between items-center">
-							<div class="block">Quran Font</div>
+							<div class="block">{$t('settings.quranFont.label')}</div>
 							<button class={selectorClasses} on:click={() => gotoIndividualSetting('quran-font')}>{selectableFontTypes[$__fontType].type} - {selectableFontTypes[$__fontType].font}</button>
 						</div>
-						<p class={settingsDescriptionClasses}>Multiple Quranic fonts to choose from depending on your mushaf or region preference.</p>
+						<p class={settingsDescriptionClasses}>{$t('settings.quranFont.desc')}</p>
 					</div>
 
 					<div class="border-b {window.theme('border')} {settingsDrawerOpacity}"></div>
@@ -353,7 +368,7 @@
 					<!-- arabic-word-size-setting -->
 					<div id="arabic-word-size-setting" class="fontSizeSliders {settingsBlockClasses} {$__currentPage === 'mushaf' && disabledClasses}">
 						<div class="flex flex-col justify-between space-y-4">
-							<span class="block">Arabic Word Size ({selectableFontSizes[arabicWordSizeValue].value.split('-')[1]})</span>
+							<span class="block">{$t('settings.arabicWordSize.label').replace('{size}', selectableFontSizes[arabicWordSizeValue].value.split('-')[1])}</span>
 							<div class="flex flex-col space-y-2 rounded-3xl w-full" role="group" on:mouseenter={() => onMouseEnter('arabic-word-size-setting')} on:mouseleave={() => onMouseLeave()}>
 								<Range min="1" max={maxFontSizeAllowed} bind:value={arabicWordSizeValue} class={rangeClasses} />
 							</div>
@@ -366,8 +381,7 @@
 					<div id="word-translation-size-setting" class="fontSizeSliders {settingsBlockClasses} {$__currentPage === 'mushaf' && disabledClasses}">
 						<div class="flex flex-col justify-between space-y-4">
 							<span class="block">
-								{$__signLanguageModeEnabled ? 'Sign Language Icon Size' : 'Word Translation/Transliteration Size'}
-								({selectableFontSizes[wordTranlationTransliterationSizeValue].value.split('-')[1]})
+								{($__signLanguageModeEnabled ? $t('settings.signLangSize.label') : $t('settings.wordTransSize.label')).replace('{size}', selectableFontSizes[wordTranlationTransliterationSizeValue].value.split('-')[1])}
 							</span>
 							<div class="flex flex-col space-y-2 rounded-3xl w-full" role="group" on:mouseenter={() => onMouseEnter('word-translation-size-setting')} on:mouseleave={() => onMouseLeave()}>
 								<Range min="1" max={maxFontSizeAllowed} bind:value={wordTranlationTransliterationSizeValue} class={rangeClasses} />
@@ -380,7 +394,7 @@
 					<!-- verse-translation-size-setting -->
 					<div id="verse-translation-size-setting" class="fontSizeSliders {settingsBlockClasses} {$__currentPage === 'mushaf' && disabledClasses}">
 						<div class="flex flex-col justify-between space-y-4">
-							<span class="block">{term('verse')} Translation/Transliteration Size ({selectableFontSizes[verseTranlationTransliterationSizeValue].value.split('-')[1]})</span>
+							<span class="block">{$t('settings.verseTransSize.label').replace('{verse}', term('verse')).replace('{size}', selectableFontSizes[verseTranlationTransliterationSizeValue].value.split('-')[1])}</span>
 							<div class="flex flex-col space-y-2 rounded-3xl w-full" role="group" on:mouseenter={() => onMouseEnter('verse-translation-size-setting')} on:mouseleave={() => onMouseLeave()}>
 								<Range min="1" max={maxFontSizeAllowed} bind:value={verseTranlationTransliterationSizeValue} class={rangeClasses} />
 							</div>
@@ -391,16 +405,16 @@
 
 			<!-- translation-settings-block -->
 			<div id="translation-settings-block" class="py-5 border-t-2 {window.theme('border')} {settingsDrawerOpacity}">
-				<h3 class="block mb-2 font-medium text-xl">Translation, Transliteration & {term('tafsir')}</h3>
+				<h3 class="block mb-2 font-medium text-xl">{$t('settings.translation').replace('{tafsir}', term('tafsir'))}</h3>
 
 				<div class="flex flex-col flex-wrap text-base">
 					<!-- word-translation-setting -->
 					<div id="word-translation-setting" class="{settingsBlockClasses} {$__signLanguageModeEnabled && disabledClasses}">
 						<div class="flex flex-row justify-between items-center">
-							<div class="block">Word Translation</div>
+							<div class="block">{$t('settings.wordTranslation.label')}</div>
 							<button class={selectorClasses} on:click={() => gotoIndividualSetting('word-translation')}>{selectableWordTranslations[$__wordTranslation].language}</button>
 						</div>
-						<p class={settingsDescriptionClasses}>Word translation which will be displaced under the Arabic word text.</p>
+						<p class={settingsDescriptionClasses}>{$t('settings.wordTranslation.desc')}</p>
 					</div>
 
 					<div class="border-b {window.theme('border')}"></div>
@@ -408,10 +422,10 @@
 					<!-- word-transliteration-setting -->
 					<div id="word-transliteration-setting" class={settingsBlockClasses}>
 						<div class="flex flex-row justify-between items-center">
-							<div class="block">Word Transliteration</div>
+							<div class="block">{$t('settings.wordTransliteration.label')}</div>
 							<button class={selectorClasses} on:click={() => gotoIndividualSetting('word-transliteration')}>{selectableWordTransliterations[wordTransliterationKey].language}</button>
 						</div>
-						<p class={settingsDescriptionClasses}>Word transliteration of various types.</p>
+						<p class={settingsDescriptionClasses}>{$t('settings.wordTransliteration.desc')}</p>
 					</div>
 
 					<div class="border-b {window.theme('border')}"></div>
@@ -419,10 +433,10 @@
 					<!-- verse-translation-setting -->
 					<div id="verse-translation-setting" class={settingsBlockClasses}>
 						<div class="flex flex-row justify-between items-center">
-							<div class="block">{term('verse')} Translation</div>
+							<div class="block">{$t('settings.verseTranslation.label').replace('{verse}', term('verse'))}</div>
 							<button class={selectorClasses} on:click={() => gotoIndividualSetting('verse-translation')}>{$__verseTranslations.length - totalVerseTransliterationsSelected} selected</button>
 						</div>
-						<p class={settingsDescriptionClasses}>{term('verse')} translations from multiple authors and languages.</p>
+						<p class={settingsDescriptionClasses}>{$t('settings.verseTranslation.desc').replace('{verse}', term('verse'))}</p>
 					</div>
 
 					<div class="border-b {window.theme('border')}"></div>
@@ -430,10 +444,10 @@
 					<!-- verse-transliteration-setting -->
 					<div id="verse-transliteration-setting" class={settingsBlockClasses}>
 						<div class="flex flex-row justify-between items-center">
-							<div class="block">{term('verse')} Transliteration</div>
+							<div class="block">{$t('settings.verseTransliteration.label').replace('{verse}', term('verse'))}</div>
 							<button class={selectorClasses} on:click={() => gotoIndividualSetting('verse-transliteration')}>{totalVerseTransliterationsSelected} selected</button>
 						</div>
-						<p class={settingsDescriptionClasses}>{term('verse')} transliteration of various types.</p>
+						<p class={settingsDescriptionClasses}>{$t('settings.verseTransliteration.desc').replace('{verse}', term('verse'))}</p>
 					</div>
 
 					<div class="border-b {window.theme('border')}"></div>
@@ -441,26 +455,26 @@
 					<!-- tafsir-setting -->
 					<div id="tafsir-setting" class={settingsBlockClasses}>
 						<div class="flex flex-row justify-between items-center">
-							<div class="block">{term('tafsir')}</div>
+							<div class="block">{$t('settings.tafsir.label').replace('{tafsir}', term('tafsir'))}</div>
 							<button class={selectorClasses} on:click={() => gotoIndividualSetting('verse-tafsir')}>{selectableTafsirs[$__verseTafsir].name}</button>
 						</div>
-						<p class={settingsDescriptionClasses}>{term('verse')} {term('tafsir')} from multiple authors and languages.</p>
+						<p class={settingsDescriptionClasses}>{$t('settings.tafsir.desc').replace('{tafsir}', term('tafsir')).replace('{verse}', term('verse'))}</p>
 					</div>
 				</div>
 			</div>
 
 			<!-- audio-settings-block -->
 			<div id="audio-settings-block" class="py-5 border-t-2 {window.theme('border')} {settingsDrawerOpacity}">
-				<h3 class="block mb-2 font-medium text-xl">Audio</h3>
+				<h3 class="block mb-2 font-medium text-xl">{$t('settings.audio')}</h3>
 
 				<div class="flex flex-col flex-wrap text-base">
 					<!-- verse-reciter-setting -->
 					<div id="verse-reciter-setting" class={settingsBlockClasses}>
 						<div class="flex flex-row justify-between items-center">
-							<div class="block">{term('verse')} Reciter</div>
+							<div class="block">{$t('settings.reciter.label').replace('{verse}', term('verse'))}</div>
 							<button class={selectorClasses} on:click={() => gotoIndividualSetting('verse-reciter')}>{selectableReciters[$__reciter].reciter}</button>
 						</div>
-						<p class={settingsDescriptionClasses}>The reciter's voice that will play when you choose to listen to a {term('verse')}.</p>
+						<p class={settingsDescriptionClasses}>{$t('settings.reciter.desc').replace('{verse}', term('verse'))}</p>
 					</div>
 
 					<div class="border-b {window.theme('border')}"></div>
@@ -468,7 +482,7 @@
 					<!-- playback-speed-setting -->
 					<div id="playback-speed-setting" class={settingsBlockClasses}>
 						<div class="flex flex-col justify-between space-y-4">
-							<span class="block">Playback Speed (x{selectablePlaybackSpeeds[playbackSpeedValue].speed})</span>
+							<span class="block">{$t('settings.playbackSpeed.label').replace('{speed}', selectablePlaybackSpeeds[playbackSpeedValue].speed)}</span>
 							<div class="flex flex-col space-y-2 rounded-3xl w-full" role="group">
 								<Range min="1" max={Object.keys(selectablePlaybackSpeeds).length} bind:value={playbackSpeedValue} class={rangeClasses} />
 							</div>
@@ -480,29 +494,29 @@
 					<!-- verse-play-button-setting -->
 					<div id="verse-play-button-setting" class={settingsBlockClasses}>
 						<div class="flex flex-row justify-between items-center">
-							<div class="block">{term('verse')} Play Button</div>
+							<div class="block">{$t('settings.versePlayBtn.label').replace('{verse}', term('verse'))}</div>
 							<button class={selectorClasses} on:click={() => gotoIndividualSetting('verse-play-button')}>{selectableVersePlayButtonOptions[$__playButtonsFunctionality.verse].name}</button>
 						</div>
-						<p class={settingsDescriptionClasses}>Select what happens when you click on the play button for a {term('verse')}.</p>
+						<p class={settingsDescriptionClasses}>{$t('settings.versePlayBtn.desc').replace('{verse}', term('verse'))}</p>
 					</div>
 				</div>
 			</div>
 
 			<!-- miscellaneous-settings-block -->
 			<div id="miscellaneous-settings-block" class="py-5 border-t-2 {window.theme('border')} {settingsDrawerOpacity}">
-				<h3 class="block mb-2 font-medium text-xl">Miscellaneous</h3>
+				<h3 class="block mb-2 font-medium text-xl">{$t('settings.misc')}</h3>
 
 				<div class="flex flex-col flex-wrap text-base">
 					<!-- verse-reciter-setting -->
 					<div id="verse-reciter-setting" class={settingsBlockClasses}>
 						<div class="flex flex-row justify-between items-center">
-							<span class="block">English Terminologies</span>
+							<span class="block">{$t('settings.englishTerminology.label')}</span>
 							<label class="inline-flex items-center cursor-pointer">
 								<input type="checkbox" value="" class="sr-only peer" checked={$__englishTerminology} on:click={(event) => updateSettings({ type: 'englishTerminology', value: event.target.checked })} data-umami-event="Toggle English Terminology" />
 								<div class={toggleBtnClasses}></div>
 							</label>
 						</div>
-						<p class={settingsDescriptionClasses}>Switch between the English and Arabic terminologies used on the website.</p>
+						<p class={settingsDescriptionClasses}>{$t('settings.englishTerminology.desc')}</p>
 					</div>
 
 					<div class="border-b {window.theme('border')}"></div>
@@ -510,13 +524,13 @@
 					<!-- non-dua-part-toggle -->
 					<div id="non-dua-part-toggle" class={settingsBlockClasses}>
 						<div class="flex flex-row justify-between items-center">
-							<span class="block">Hide Non-{term('supplications')} Words</span>
+							<span class="block">{$t('settings.hideNonDua.label').replace('{supplications}', term('supplications'))}</span>
 							<label class="inline-flex items-center cursor-pointer">
 								<input type="checkbox" value="" class="sr-only peer" checked={$__hideNonDuaPart} on:click={(event) => updateSettings({ type: 'hideNonDuaPart', value: event.target.checked })} data-umami-event="Toggle Non-Dua Words" />
 								<div class={toggleBtnClasses}></div>
 							</label>
 						</div>
-						<p class={settingsDescriptionClasses}>Show/hide the non-{term('supplications')} words in the {term('supplications')} page.</p>
+						<p class={settingsDescriptionClasses}>{$t('settings.hideNonDua.desc').replace(/\{supplications\}/g, term('supplications'))}</p>
 					</div>
 
 					<div class="border-b {window.theme('border')}"></div>
@@ -524,13 +538,13 @@
 					<!-- show-morphology-on-word-click-toggle -->
 					<div id="show-morphology-on-word-click" class={settingsBlockClasses}>
 						<div class="flex flex-row justify-between items-center">
-							<span class="block">Word Morphology On Click</span>
+							<span class="block">{$t('settings.wordMorphologyOnClick.label')}</span>
 							<label class="inline-flex items-center cursor-pointer">
 								<input type="checkbox" value="" class="sr-only peer" checked={$__wordMorphologyOnClick} on:click={(event) => updateSettings({ type: 'wordMorphologyOnClick', value: event.target.checked })} data-umami-event="Toggle Morphology On Click" />
 								<div class={toggleBtnClasses}></div>
 							</label>
 						</div>
-						<p class={settingsDescriptionClasses}>Show morphology on word click, instead of playing audio.</p>
+						<p class={settingsDescriptionClasses}>{$t('settings.wordMorphologyOnClick.desc')}</p>
 					</div>
 
 					<div class="border-b {window.theme('border')}"></div>
@@ -538,24 +552,24 @@
 					<!-- import-export-settings -->
 					<div id="import-export-settings" class={settingsBlockClasses}>
 						<div class="flex flex-row justify-between items-center">
-							<span class="block">Backup & Restore</span>
+							<span class="block">{$t('settings.backupRestore.label')}</span>
 
 							<div class="flex flex-row space-x-2">
 								<button class="text-sm space-x-2 {buttonClasses}" on:click={exportSettings}>
 									<Export />
-									<span>Backup</span>
+									<span>{$t('common.backup')}</span>
 								</button>
-								<Tooltip arrow={false} type="light" placement="top" class="z-30 hidden md:block font-normal">Backup</Tooltip>
+								<Tooltip arrow={false} type="light" placement="top" class="z-30 hidden md:block font-normal">{$t('common.backup')}</Tooltip>
 
 								<button class="text-sm space-x-2 {buttonClasses}" on:click={triggerImport}>
 									<Import />
-									<span>Restore</span>
+									<span>{$t('common.restore')}</span>
 								</button>
-								<Tooltip arrow={false} type="light" placement="top" class="z-30 hidden md:block font-normal">Restore</Tooltip>
+								<Tooltip arrow={false} type="light" placement="top" class="z-30 hidden md:block font-normal">{$t('common.restore')}</Tooltip>
 								<input type="file" accept=".qwbw,.txt" bind:this={fileInput} on:change={handleFileChange} style="display: none;" />
 							</div>
 						</div>
-						<p class={settingsDescriptionClasses}>Keep your settings safe. Export a copy now or import one to restore your preferences.</p>
+						<p class={settingsDescriptionClasses}>{$t('settings.backupRestore.desc')}</p>
 					</div>
 
 					<div class="border-b {window.theme('border')}"></div>
@@ -563,14 +577,14 @@
 					<!-- reset-setting-button -->
 					<div id="reset-setting-button" class={settingsBlockClasses}>
 						<div class="flex flex-row justify-between items-center">
-							<span class="block">Reset Settings</span>
-							<button class="text-sm space-x-2 {buttonClasses}" on:click={() => showConfirm('This action will permanently erase all locally stored data for this website, including settings, bookmarks, notes, offline files, and cache. This cannot be undone.', 'settings-drawer', () => resetSettings())}>
+							<span class="block">{$t('settings.resetSettings.label')}</span>
+							<button class="text-sm space-x-2 {buttonClasses}" on:click={() => showConfirm($t('settings.resetConfirm'), 'settings-drawer', () => resetSettings())}>
 								<ResetSettings />
-								<span>Reset</span>
+								<span>{$t('common.reset')}</span>
 							</button>
-							<Tooltip arrow={false} type="light" placement="top" class="z-30 hidden md:block font-normal">Reset</Tooltip>
+							<Tooltip arrow={false} type="light" placement="top" class="z-30 hidden md:block font-normal">{$t('common.reset')}</Tooltip>
 						</div>
-						<p class={settingsDescriptionClasses}>Resets the website to a clean state by removing all saved settings, bookmarks, notes, offline data, and cached files from this device.</p>
+						<p class={settingsDescriptionClasses}>{$t('settings.resetSettings.desc')}</p>
 					</div>
 				</div>
 			</div>
@@ -587,7 +601,7 @@
 	{#if showIndividualSetting}
 		<div id="individual-setting" transition:fly={{ duration: 150, x: 0, easing: sineIn }}>
 			<div class="flex z-30 top-0 sticky {window.theme('bgMain')} border-b-2 {window.theme('border')} mb-4">
-				<button id="drawer-label" class="inline-flex items-center my-4 text-3xl font-semibold" on:click={() => goBackToMainSettings()}>← Back</button>
+				<button id="drawer-label" class="inline-flex items-center my-4 text-3xl font-semibold" on:click={() => goBackToMainSettings()}>{$t('common.back')}</button>
 				<CloseButton on:click={() => ($__settingsDrawerHidden = true)} class="my-4 rounded-3xl" />
 			</div>
 

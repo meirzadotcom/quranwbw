@@ -38,10 +38,19 @@ export const bismillahFonts = {
 	firefoxDarkTajweed: { file: 'QCF_Bismillah_COLOR-Dark-FF-Regular', version: 13 } // Firefox Dark Mode Tajweed
 };
 
+// Languages that have their own word summary (morphology description) data on the CDN.
+// When a language is listed here, the summary is fetched from a language-specific path.
+// English is the default and does not need to be listed.
+export const morphologySupportedSummaryLanguages = ['id'];
+
 // Map of morphology data URLs
 export const morphologyDataUrls = {
-	// Word summaries for each chapter (1-114)
-	getWordSummary: (chapter) => `${staticEndpoint}/lexicon/word-summaries/${chapter}.json?version=2`,
+	// Word summaries for each chapter (1-114).
+	// Pass a language code (e.g. 'id') to fetch the localised version when available.
+	getWordSummary: (/** @type {number} */ chapter, /** @type {string} */ lang = 'en') =>
+		lang !== 'en' && morphologySupportedSummaryLanguages.includes(lang)
+			? `${staticEndpoint}/lexicon/word-summaries/${lang}/${chapter}.json?version=1`
+			: `${staticEndpoint}/lexicon/word-summaries/${chapter}.json?version=2`,
 
 	// Static morphology data files
 	wordVerbs: `${staticEndpoint}/morphology-data/word-verbs.json?version=1`,
